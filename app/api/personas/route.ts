@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../src/infrastructure/lib/prisma';
 import { PrismaPersonaRepository } from '../../../src/infrastructure/repositories/prisma-persona-repository';
 import { CrearPersonaUseCase } from '../../../src/application/use-cases/crear-persona';
-import { createRouteHandler, validateRequestBody as validateRequestBodyMiddleware } from '../../../src/infrastructure/middleware/with-error-handler';
+import { createAuthenticatedRouteHandler } from '../../../src/infrastructure/auth/auth-middleware';
+import { validateRequestBody } from '../../../src/infrastructure/middleware/with-error-handler';
 import { z } from 'zod';
 import { EstadoVerificacion } from '../../../src/domain/enums/estado-verificacion';
+import { AuthenticatedUser, UserRole } from '../../../src/infrastructure/auth/types';
 
 // Validation schema for creating a persona
 const crearPersonaSchema = z.object({
@@ -26,8 +28,8 @@ const listarPersonasSchema = z.object({
   offset: z.coerce.number().min(0).default(0),
 });
 
-async function POSTHandler(request: NextRequest) {
-  const body = await validateRequestBodyMiddleware<CrearPersonaInput>(request, crearPersonaSchema);
+async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
+  const body = await validateRequestBody<CrearPersonaInput>(request, crearPersonaSchema);
 
   const personaRepository = new PrismaPersonaRepository(prisma);
   const useCase = new CrearPersonaUseCase(personaRepository);
@@ -40,12 +42,14 @@ async function POSTHandler(request: NextRequest) {
     jubilado: body.jubilado,
     ipsActivo: body.ipsActivo,
     datosVarios: body.datosVarios,
+    // TODO: Add createdBy field to persona entity
+    // For now, we can log the user who created this persona
   });
 
   return NextResponse.json(result, { status: 201 });
 }
 
-async function GETHandler(request: NextRequest) {
+async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
   const { searchParams } = new URL(request.url);
   const query = listarPersonasSchema.parse({
     search: searchParams.get('search'),
@@ -83,5 +87,10 @@ async function GETHandler(request: NextRequest) {
   });
 }
 
-export const POST = createRouteHandler(POSTHandler);
-export const GET = createRouteHandler(GETHandler);
+export const POST = createAuthenticatedRouteHandler(POSTHandler, {
+  requiredRoles: ['gestor', 'supervisor', 'administrador']
+});
+
+export const GET = createAuthenticatedRouteHandler(GETHandler, {
+  requiredRoles: ['gestor', 'supervisor', 'administrador']
+});

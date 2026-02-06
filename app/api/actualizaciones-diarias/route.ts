@@ -4,8 +4,10 @@ import { PrismaDeudaRepository } from '../../../src/infrastructure/repositories/
 import { PrismaTransicionEstadoRepository } from '../../../src/infrastructure/repositories/prisma-transicion-estado-repository';
 import { InteresAcumulador } from '../../../src/domain/services/interes-acumulador';
 import { ActualizarDeudasDiariamenteUseCase } from '../../../src/application/use-cases/actualizar-deudas-diariamente';
-import { createRouteHandler, createProtectedRouteHandler, validateRequestBody } from '../../../src/infrastructure/middleware/with-error-handler';
+import { createAuthenticatedRouteHandler } from '../../../src/infrastructure/auth/auth-middleware';
+import { validateRequestBody } from '../../../src/infrastructure/middleware/with-error-handler';
 import { z } from 'zod';
+import { AuthenticatedUser } from '../../../src/infrastructure/auth/types';
 
 // Validation schema for request body
 const updateDebtsSchema = z.object({
@@ -14,7 +16,7 @@ const updateDebtsSchema = z.object({
 
 type UpdateDebtsInput = z.infer<typeof updateDebtsSchema>;
 
-async function POSTHandler(request: NextRequest) {
+async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
   // Validate request body
   const { fechaReferencia } = await validateRequestBody<UpdateDebtsInput>(request, updateDebtsSchema);
   
@@ -41,8 +43,10 @@ async function POSTHandler(request: NextRequest) {
   return NextResponse.json(result, { status: 200 });
 }
 
-// Export wrapped handler with error handling, logging, and rate limiting
-export const POST = createProtectedRouteHandler(POSTHandler, {
+// Export wrapped handler with authentication, error handling, logging, and rate limiting
+export const POST = createAuthenticatedRouteHandler(POSTHandler, {
+  requiredRoles: ['administrador']
+}, {
   windowMs: 60 * 1000, // 1 minute window
   maxRequests: 10, // Max 10 requests per minute
 });

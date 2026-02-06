@@ -8,12 +8,15 @@ import { PrismaSolicitudAutorizacionRepository } from '../../../src/infrastructu
 import { PrismaUsuarioRepository } from '../../../src/infrastructure/repositories/prisma-usuario-repository';
 import { AsignadorSupervisor } from '../../../src/domain/services/asignador-supervisor';
 import { CrearSeguimientoUseCase } from '../../../src/application/use-cases/crear-seguimiento';
-import { createRouteHandler, createProtectedRouteHandler, validateRequestBody } from '../../../src/infrastructure/middleware/with-error-handler';
+import { createAuthenticatedRouteHandler } from '../../../src/infrastructure/auth/auth-middleware';
+import { validateRequestBody } from '../../../src/infrastructure/middleware/with-error-handler';
 import { z } from 'zod';
+import { AuthenticatedUser, UserRole } from '../../../src/infrastructure/auth/types';
+import { AppError } from '../../../src/domain/errors/app-error';
 
 // Validation schema for creating a seguimiento
 const crearSeguimientoSchema = z.object({
-  gestorId: z.number(),
+  gestorId: z.number().optional(),
   personaId: z.number(),
   deudaIds: z.array(z.number()).min(1, 'Debe incluir al menos una deuda'),
   tipoGestionId: z.number(),
@@ -24,8 +27,20 @@ const crearSeguimientoSchema = z.object({
 
 type CrearSeguimientoInput = z.infer<typeof crearSeguimientoSchema>;
 
-async function POSTHandler(request: NextRequest) {
+async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
   const body = await validateRequestBody<CrearSeguimientoInput>(request, crearSeguimientoSchema);
+  
+  // Determine gestorId: use provided gestorId or default to authenticated user's ID
+  const userId = typeof user.id === 'string' ? parseInt(user.id, 10) : user.id;
+  const gestorId = body.gestorId ?? userId;
+  
+  // Authorization: gestores can only create seguimientos for themselves
+  // Supervisors and administrators can create seguimientos for any gestor
+  if (user.role === 'gestor') {
+    if (gestorId !== userId) {
+      throw new AppError('Gestores solo pueden crear seguimientos para sí mismos', 403, 'FORBIDDEN');
+    }
+  }
 
   const deudaRepository = new PrismaDeudaRepository(prisma);
   const seguimientoRepository = new PrismaSeguimientoRepository(prisma);
@@ -45,7 +60,7 @@ async function POSTHandler(request: NextRequest) {
   );
 
   const result = await useCase.execute({
-    gestorId: body.gestorId,
+    gestorId,
     personaId: body.personaId,
     deudaIds: body.deudaIds,
     tipoGestionId: body.tipoGestionId,
@@ -57,5 +72,7 @@ async function POSTHandler(request: NextRequest) {
   return NextResponse.json(result, { status: 201 });
 }
 
-// Export wrapped handler with error handling, logging, and rate limiting
-export const POST = createProtectedRouteHandler(POSTHandler);
+// Export wrapped handler with authentication, error handling, logging, and rate limiting
+export const POST = createAuthenticatedRouteHandler(POSTHandler, {
+  requiredRoles: ['gestor', 'supervisor', 'administrador']
+});

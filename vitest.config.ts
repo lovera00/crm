@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitest/config';
+import { loadEnv } from 'vite';
+import path from 'path';
 
 export default defineConfig({
   test: {
@@ -14,6 +16,7 @@ export default defineConfig({
         '**/*.config.*',
       ],
     },
+    env: loadEnv('test', process.cwd(), ''),
   },
   resolve: {
     alias: {

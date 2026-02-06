@@ -146,6 +146,83 @@ describe('CronJobService', () => {
       
       vi.useRealTimers();
     });
+
+    it('debería ejecutar actualización periódica cada 24 horas', async () => {
+      vi.useFakeTimers();
+      const now = new Date('2024-01-01T10:00:00Z');
+      vi.setSystemTime(now);
+
+      const mockExecute = vi.fn().mockResolvedValue({
+        deudasProcesadas: 0,
+        deudasConInteresesAplicados: 0,
+        deudasConEstadoCambiado: 0,
+        interesMoratorioTotal: 0,
+        interesPunitorioTotal: 0,
+        detalles: [],
+      });
+      const useCaseWithMock = { execute: mockExecute } as unknown as ActualizarDeudasDiariamenteUseCase;
+      const loggerMock = { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() };
+      // Configurar hora de ejecución 1 hora después de ahora (11:00)
+      const service = new CronJobService(useCaseWithMock, loggerMock, { horaEjecucion: 11, minutoEjecucion: 0 });
+
+      service.start();
+      
+      // Avanzar 1 hora para primera ejecución (de 10:00 a 11:00)
+      await vi.advanceTimersByTimeAsync(60 * 60 * 1000);
+      expect(mockExecute).toHaveBeenCalledTimes(1);
+      
+      // Avanzar 24 horas para segunda ejecución periódica (de 11:00 a 11:00 del día siguiente)
+      await vi.advanceTimersByTimeAsync(24 * 60 * 60 * 1000);
+      expect(mockExecute).toHaveBeenCalledTimes(2);
+      
+      // Avanzar otras 24 horas para tercera ejecución
+      await vi.advanceTimersByTimeAsync(24 * 60 * 60 * 1000);
+      expect(mockExecute).toHaveBeenCalledTimes(3);
+      
+      vi.useRealTimers();
+    });
+  });
+
+  describe('manejo de errores', () => {
+    it('debería manejar error que no es instancia de Error', async () => {
+      vi.useFakeTimers();
+      const now = new Date('2024-01-01T10:00:00Z');
+      vi.setSystemTime(now);
+
+      const mockExecute = vi.fn().mockRejectedValue('String error no es Error');
+      const useCaseWithMock = { execute: mockExecute } as unknown as ActualizarDeudasDiariamenteUseCase;
+      const loggerMock = { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() };
+      const service = new CronJobService(useCaseWithMock, loggerMock, { horaEjecucion: 11, minutoEjecucion: 0 });
+
+      service.start();
+      await vi.advanceTimersByTimeAsync(60 * 60 * 1000);
+      
+      expect(loggerMock.error).toHaveBeenCalledWith(
+        'Error durante la actualización diaria de deudas',
+        { error: 'String error no es Error' }
+      );
+      vi.useRealTimers();
+    });
+
+    it('debería manejar error que es instancia de Error', async () => {
+      vi.useFakeTimers();
+      const now = new Date('2024-01-01T10:00:00Z');
+      vi.setSystemTime(now);
+
+      const mockExecute = vi.fn().mockRejectedValue(new Error('Mensaje de error'));
+      const useCaseWithMock = { execute: mockExecute } as unknown as ActualizarDeudasDiariamenteUseCase;
+      const loggerMock = { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() };
+      const service = new CronJobService(useCaseWithMock, loggerMock, { horaEjecucion: 11, minutoEjecucion: 0 });
+
+      service.start();
+      await vi.advanceTimersByTimeAsync(60 * 60 * 1000);
+      
+      expect(loggerMock.error).toHaveBeenCalledWith(
+        'Error durante la actualización diaria de deudas',
+        { error: 'Mensaje de error' }
+      );
+      vi.useRealTimers();
+    });
   });
 
   describe('ConsoleLogger', () => {
@@ -156,14 +233,18 @@ describe('CronJobService', () => {
       const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
 
       const logger = new ConsoleLogger();
-      logger.info('Mensaje info', { data: 'test' });
+      logger.info('Mensaje info con metadata', { data: 'test' });
+      logger.info('Mensaje info sin metadata');
       logger.warn('Mensaje warn');
-      logger.error('Mensaje error', { error: 'something' });
+      logger.error('Mensaje error con metadata', { error: 'something' });
+      logger.error('Mensaje error sin metadata');
       logger.debug('Mensaje debug');
 
-      expect(consoleLogSpy).toHaveBeenCalledWith('[INFO] Mensaje info', { data: 'test' });
+      expect(consoleLogSpy).toHaveBeenNthCalledWith(1, '[INFO] Mensaje info con metadata', { data: 'test' });
+      expect(consoleLogSpy).toHaveBeenNthCalledWith(2, '[INFO] Mensaje info sin metadata', '');
       expect(consoleWarnSpy).toHaveBeenCalledWith('[WARN] Mensaje warn', '');
-      expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] Mensaje error', { error: 'something' });
+      expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, '[ERROR] Mensaje error con metadata', { error: 'something' });
+      expect(consoleErrorSpy).toHaveBeenNthCalledWith(2, '[ERROR] Mensaje error sin metadata', '');
       expect(consoleDebugSpy).toHaveBeenCalledWith('[DEBUG] Mensaje debug', '');
 
       consoleLogSpy.mockRestore();

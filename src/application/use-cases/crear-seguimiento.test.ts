@@ -110,6 +110,50 @@ describe('CrearSeguimientoUseCase', () => {
     expect(seguimientoRepository.guardar).toHaveBeenCalled();
   });
 
+  it('debería mantener estado actual cuando regla tiene estadoDestino null', async () => {
+    const deudaMock = Deuda.crear({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo',
+      gestorAsignadoId: 100,
+      montoCuota: null,
+    });
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(deudaMock);
+
+    const reglaMock = ReglaTransicion.crear({
+      tipoGestionId: 5,
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: null, // Mismo estado
+      requiereAutorizacion: false,
+    });
+    vi.mocked(reglaTransicionRepository.buscarPorTipoGestion).mockResolvedValue([reglaMock]);
+
+    const input = {
+      gestorId: 100,
+      personaId: 200,
+      deudaIds: [1],
+      tipoGestionId: 5,
+      observacion: 'Test',
+    };
+
+    // Mockear validación de transición (transición de Nuevo a Nuevo puede ser válida)
+    vi.mocked(transicionEstadoRepository.obtenerTransicion).mockResolvedValue({
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.NUEVO,
+      requiereAutorizacion: false,
+      descripcion: 'Transición permitida',
+    });
+
+    const output = await useCase.execute(input);
+
+    expect(output.seguimientoId).toBeDefined();
+    expect(output.deudasActualizadas).toHaveLength(1);
+    expect(output.deudasActualizadas[0].nuevoEstado).toBe(EstadoDeuda.NUEVO); // Estado permanece igual
+    expect(output.deudasActualizadas[0].requiereAutorizacion).toBe(false);
+    expect(seguimientoRepository.guardar).toHaveBeenCalled();
+    // La deuda puede guardarse aunque el estado no cambie
+  });
+
   it('debería lanzar error cuando transición no es permitida', async () => {
     const deudaMock = Deuda.crear({
       id: 1,
@@ -461,5 +505,153 @@ describe('CrearSeguimientoUseCase', () => {
         prioridad: 'Baja' // PrioridadSolicitud.BAJA
       })
     );
+  });
+
+  it('debería asignar prioridad MEDIA para deuda con monto entre 10000 y 100000 inclusive', async () => {
+    const deudaMock = Deuda.reconstruir({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo mediano',
+      estadoActual: EstadoDeuda.NUEVO,
+      gestorAsignadoId: 100,
+      diasMora: 0,
+      diasGestion: 0,
+      saldoCapitalTotal: 50000,
+      deudaTotal: 50000, // Entre 10000 y 100000
+      gastosCobranza: 0,
+      interesMoratorio: 0,
+      interesPunitorio: 0,
+      fechaUltimoPago: null,
+      montoCuota: null,
+      fechaAsignacionGestor: null,
+      tasaInteresMoratorio: null,
+      tasaInteresPunitorio: null,
+      fechaExpiracionAcuerdo: null,
+      cuotas: [],
+    });
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(deudaMock);
+
+    const reglaMock = ReglaTransicion.crear({
+      tipoGestionId: 5,
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.CON_ACUERDO,
+      requiereAutorizacion: true,
+    });
+    vi.mocked(reglaTransicionRepository.buscarPorTipoGestion).mockResolvedValue([reglaMock]);
+
+    const input = {
+      gestorId: 100,
+      personaId: 200,
+      deudaIds: [1],
+      tipoGestionId: 5,
+      observacion: 'Solicito acuerdo',
+    };
+
+    vi.mocked(transicionEstadoRepository.obtenerTransicion).mockResolvedValue({
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.CON_ACUERDO,
+      requiereAutorizacion: true,
+      descripcion: 'Transición con autorización',
+    });
+
+    const crearSpy = vi.spyOn(solicitudAutorizacionRepository, 'crear');
+    
+    await useCase.execute(input);
+    
+    expect(crearSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prioridad: 'Media' // PrioridadSolicitud.MEDIA
+      })
+    );
+  });
+
+  it('debería mantener estado actual cuando no hay regla aplicable', async () => {
+    const deudaMock = Deuda.reconstruir({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo',
+      estadoActual: EstadoDeuda.NUEVO,
+      gestorAsignadoId: 100,
+      diasMora: 0,
+      diasGestion: 0,
+      saldoCapitalTotal: 1000,
+      deudaTotal: 1000,
+      gastosCobranza: 0,
+      interesMoratorio: 0,
+      interesPunitorio: 0,
+      fechaUltimoPago: null,
+      montoCuota: null,
+      fechaAsignacionGestor: null,
+      tasaInteresMoratorio: null,
+      tasaInteresPunitorio: null,
+      fechaExpiracionAcuerdo: null,
+      cuotas: [],
+    });
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(deudaMock);
+
+    // No hay reglas para este tipo de gestión
+    vi.mocked(reglaTransicionRepository.buscarPorTipoGestion).mockResolvedValue([]);
+
+    const input = {
+      gestorId: 100,
+      personaId: 200,
+      deudaIds: [1],
+      tipoGestionId: 5,
+      observacion: 'Test sin regla',
+    };
+
+    // No se necesita validación de transición porque no hay regla aplicable
+    vi.mocked(transicionEstadoRepository.obtenerTransicion).mockResolvedValue(null);
+
+    const output = await useCase.execute(input);
+
+    expect(output.seguimientoId).toBeDefined();
+    expect(output.deudasActualizadas).toHaveLength(1);
+    expect(output.deudasActualizadas[0].nuevoEstado).toBe(EstadoDeuda.NUEVO); // Estado permanece igual
+    expect(output.deudasActualizadas[0].requiereAutorizacion).toBe(false);
+    expect(output.solicitudesAutorizacion).toHaveLength(0);
+  });
+
+  it('debería usar estado actual cuando obtenerEstadoDestino devuelve null', async () => {
+    const deudaMock = Deuda.crear({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo',
+      gestorAsignadoId: 100,
+      montoCuota: null,
+    });
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(deudaMock);
+
+    const reglaMock = ReglaTransicion.crear({
+      tipoGestionId: 5,
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.EN_GESTION,
+      requiereAutorizacion: false,
+    });
+    vi.mocked(reglaTransicionRepository.buscarPorTipoGestion).mockResolvedValue([reglaMock]);
+
+    // Mockear obtenerEstadoDestino para devolver null
+    const obtenerEstadoDestinoSpy = vi.spyOn(reglaMock, 'obtenerEstadoDestino').mockReturnValue(null);
+
+    const input = {
+      gestorId: 100,
+      personaId: 200,
+      deudaIds: [1],
+      tipoGestionId: 5,
+      observacion: 'Test',
+    };
+
+    // Mockear validación de transición (cualquier estado a null no es válido, pero nuestro mock devuelve null)
+    vi.mocked(transicionEstadoRepository.obtenerTransicion).mockResolvedValue(null);
+
+    const output = await useCase.execute(input);
+
+    expect(output.seguimientoId).toBeDefined();
+    expect(output.deudasActualizadas).toHaveLength(1);
+    // Como obtenerEstadoDestino devolvió null, el operador ?? usa estado actual
+    expect(output.deudasActualizadas[0].nuevoEstado).toBe(EstadoDeuda.NUEVO);
+    expect(output.deudasActualizadas[0].requiereAutorizacion).toBe(false);
+    expect(obtenerEstadoDestinoSpy).toHaveBeenCalledWith(EstadoDeuda.NUEVO);
+    obtenerEstadoDestinoSpy.mockRestore();
   });
 });

@@ -30,6 +30,17 @@ describe('EvaluadorCondicion', () => {
       expect(EvaluadorCondicion.evaluar({ ...condicion, valor: 200000 }, contextoBase)).toBe(false);
     });
 
+    it('debería evaluar desigualdad (neq) correctamente', () => {
+      const condicion: CondicionComparacion = {
+        tipo: 'comparacion',
+        campo: 'deudaTotal',
+        operador: 'neq',
+        valor: 200000,
+      };
+      expect(EvaluadorCondicion.evaluar(condicion, contextoBase)).toBe(true);
+      expect(EvaluadorCondicion.evaluar({ ...condicion, valor: 150000 }, contextoBase)).toBe(false);
+    });
+
     it('debería evaluar mayor que (gt) correctamente', () => {
       const condicion: CondicionComparacion = {
         tipo: 'comparacion',
@@ -172,6 +183,37 @@ describe('EvaluadorCondicion', () => {
         ],
       };
       expect(() => EvaluadorCondicion.evaluar(condicion, contextoBase)).toThrow();
+    });
+  });
+
+  describe('casos de error', () => {
+    it('debería lanzar error para tipo de condición no soportado', () => {
+      const condicion = {
+        tipo: 'desconocido',
+        campo: 'deudaTotal',
+        operador: 'eq',
+        valor: 150000,
+      };
+      expect(() => EvaluadorCondicion.evaluar(condicion as any, contextoBase)).toThrow('Tipo de condición no soportado: desconocido');
+    });
+
+    it('debería lanzar error para operador de comparación no soportado', () => {
+      const condicion: CondicionComparacion = {
+        tipo: 'comparacion',
+        campo: 'deudaTotal',
+        operador: 'desconocido' as any,
+        valor: 150000,
+      };
+      expect(() => EvaluadorCondicion.evaluar(condicion, contextoBase)).toThrow('Operador no soportado: desconocido');
+    });
+
+    it('debería lanzar error para operador lógico no soportado', () => {
+      const condicion: CondicionLogica = {
+        tipo: 'logica',
+        operador: 'desconocido' as any,
+        condiciones: [],
+      };
+      expect(() => EvaluadorCondicion.evaluar(condicion, contextoBase)).toThrow('Operador lógico no soportado: desconocido');
     });
   });
 

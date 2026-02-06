@@ -77,6 +77,27 @@ describe('Deuda', () => {
       expect(diasMora).toBe(45); // Desde la más antigua (2024-05-01)
     });
 
+    it('debería manejar cuotas vencidas con la misma fecha de vencimiento', () => {
+      const fechaReferencia = new Date('2024-06-15');
+      const deuda = crearDeudaConCuotas([
+        {
+          numeroCuota: 1,
+          fechaVencimiento: new Date('2024-05-01'), // 45 días de mora
+          capitalOriginal: 1000,
+          estadoCuota: EstadoCuota.VENCIDA,
+        },
+        {
+          numeroCuota: 2,
+          fechaVencimiento: new Date('2024-05-01'), // misma fecha
+          capitalOriginal: 1500,
+          estadoCuota: EstadoCuota.VENCIDA,
+        },
+      ]);
+
+      const diasMora = deuda.calcularDiasMora(fechaReferencia);
+      expect(diasMora).toBe(45); // Misma fecha, cualquiera
+    });
+
     it('debería incluir cuotas pendientes con fecha vencida', () => {
       const fechaReferencia = new Date('2024-06-15');
       const deuda = crearDeudaConCuotas([

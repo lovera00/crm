@@ -69,6 +69,33 @@ describe('EvaluadorRegla', () => {
       const contexto = EvaluadorRegla.crearContextoDeDeuda(deudaConAcuerdo);
       expect(contexto.tieneAcuerdo).toBe(true);
     });
+
+    it('debería manejar valores null en gestorAsignadoId y montoCuota', () => {
+      const deudaNull = Deuda.reconstruir({
+        id: 3,
+        acreedor: 'Banco',
+        concepto: 'Préstamo',
+        estadoActual: EstadoDeuda.NUEVO,
+        gestorAsignadoId: null,
+        diasMora: 0,
+        diasGestion: 0,
+        saldoCapitalTotal: 10000,
+        deudaTotal: 10000,
+        gastosCobranza: 0,
+        interesMoratorio: 0,
+        interesPunitorio: 0,
+        fechaUltimoPago: null,
+        montoCuota: null,
+        fechaAsignacionGestor: null,
+        tasaInteresMoratorio: null,
+        tasaInteresPunitorio: null,
+        fechaExpiracionAcuerdo: null,
+        cuotas: [],
+      });
+      const contexto = EvaluadorRegla.crearContextoDeDeuda(deudaNull);
+      expect(contexto.gestorAsignadoId).toBe(0); // Por el operador ??
+      expect(contexto.montoCuota).toBeNull();
+    });
   });
 
   describe('evaluarReglaParaDeuda', () => {

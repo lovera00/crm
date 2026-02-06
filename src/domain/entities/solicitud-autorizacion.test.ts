@@ -86,6 +86,24 @@ describe('SolicitudAutorizacion', () => {
       expect(solicitud.estaAprobada).toBe(true);
     });
 
+    it('debería aprobar solicitud pendiente sin comentario', () => {
+      const solicitud = SolicitudAutorizacion.crear({
+        seguimientoId: 1,
+        deudaMaestraId: 100,
+        estadoOrigen: EstadoDeuda.NUEVO,
+        estadoDestino: EstadoDeuda.EN_GESTION,
+        gestorSolicitanteId: 50,
+        prioridad: PrioridadSolicitud.MEDIA,
+      });
+
+      solicitud.aprobar(); // Sin argumento
+      expect(solicitud.estadoSolicitud).toBe(EstadoSolicitud.APROBADA);
+      expect(solicitud.fechaResolucion).toBeInstanceOf(Date);
+      expect(solicitud.comentarioSupervisor).toBeUndefined();
+      expect(solicitud.estaPendiente).toBe(false);
+      expect(solicitud.estaAprobada).toBe(true);
+    });
+
     it('no debería aprobar solicitud ya resuelta', () => {
       const solicitud = SolicitudAutorizacion.crear({
         seguimientoId: 1,
@@ -116,6 +134,24 @@ describe('SolicitudAutorizacion', () => {
       expect(solicitud.estadoSolicitud).toBe(EstadoSolicitud.RECHAZADA);
       expect(solicitud.fechaResolucion).toBeInstanceOf(Date);
       expect(solicitud.comentarioSupervisor).toBe('No cumple requisitos');
+      expect(solicitud.estaPendiente).toBe(false);
+      expect(solicitud.estaRechazada).toBe(true);
+    });
+
+    it('debería rechazar solicitud pendiente sin comentario', () => {
+      const solicitud = SolicitudAutorizacion.crear({
+        seguimientoId: 1,
+        deudaMaestraId: 100,
+        estadoOrigen: EstadoDeuda.NUEVO,
+        estadoDestino: EstadoDeuda.EN_GESTION,
+        gestorSolicitanteId: 50,
+        prioridad: PrioridadSolicitud.MEDIA,
+      });
+
+      solicitud.rechazar(); // Sin argumento
+      expect(solicitud.estadoSolicitud).toBe(EstadoSolicitud.RECHAZADA);
+      expect(solicitud.fechaResolucion).toBeInstanceOf(Date);
+      expect(solicitud.comentarioSupervisor).toBeUndefined();
       expect(solicitud.estaPendiente).toBe(false);
       expect(solicitud.estaRechazada).toBe(true);
     });

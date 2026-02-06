@@ -18,13 +18,16 @@ export interface DeudaProps {
   fechaUltimoPago: Date | null;
   montoCuota: number | null;
   fechaAsignacionGestor: Date | null;
+  tasaInteresMoratorio: number | null;
+  tasaInteresPunitorio: number | null;
+  fechaExpiracionAcuerdo: Date | null;
   cuotas: Cuota[];
 }
 
 export class Deuda {
   private constructor(private props: DeudaProps) {}
 
-  public static crear(props: Omit<DeudaProps, 'estadoActual' | 'diasMora' | 'diasGestion' | 'saldoCapitalTotal' | 'deudaTotal' | 'gastosCobranza' | 'interesMoratorio' | 'interesPunitorio' | 'fechaUltimoPago' | 'fechaAsignacionGestor' | 'cuotas'> & {
+  public static crear(props: Omit<DeudaProps, 'estadoActual' | 'diasMora' | 'diasGestion' | 'saldoCapitalTotal' | 'deudaTotal' | 'gastosCobranza' | 'interesMoratorio' | 'interesPunitorio' | 'fechaUltimoPago' | 'fechaAsignacionGestor' | 'tasaInteresMoratorio' | 'tasaInteresPunitorio' | 'fechaExpiracionAcuerdo' | 'cuotas'> & {
     cuotas?: Cuota[];
   }): Deuda {
     const defaultProps: Partial<DeudaProps> = {
@@ -38,6 +41,9 @@ export class Deuda {
       interesPunitorio: 0,
       fechaUltimoPago: null,
       fechaAsignacionGestor: null,
+      tasaInteresMoratorio: null,
+      tasaInteresPunitorio: null,
+      fechaExpiracionAcuerdo: null,
       cuotas: [],
     };
     const mergedProps: DeudaProps = {
@@ -99,6 +105,23 @@ export class Deuda {
     this.props.diasGestion = this.calcularDiasGestion(fechaReferencia);
   }
 
+  estaAcuerdoExpirado(fechaReferencia: Date): boolean {
+    if (this.estadoActual !== EstadoDeuda.CON_ACUERDO || !this.fechaExpiracionAcuerdo) {
+      return false;
+    }
+    return fechaReferencia > this.fechaExpiracionAcuerdo;
+  }
+
+  esEstadoFinal(): boolean {
+    const estadosFinales = [
+      EstadoDeuda.CANCELADA,
+      EstadoDeuda.INCOBRABLE,
+      EstadoDeuda.JUDICIALIZADA,
+      EstadoDeuda.FALLECIDO,
+    ];
+    return estadosFinales.includes(this.estadoActual);
+  }
+
   get id(): number | undefined {
     return this.props.id;
   }
@@ -157,6 +180,18 @@ export class Deuda {
 
   get fechaAsignacionGestor(): Date | null {
     return this.props.fechaAsignacionGestor;
+  }
+
+  get tasaInteresMoratorio(): number | null {
+    return this.props.tasaInteresMoratorio;
+  }
+
+  get tasaInteresPunitorio(): number | null {
+    return this.props.tasaInteresPunitorio;
+  }
+
+  get fechaExpiracionAcuerdo(): Date | null {
+    return this.props.fechaExpiracionAcuerdo;
   }
 
   get cuotas(): Cuota[] {

@@ -47,6 +47,9 @@ export class PrismaDeudaRepository implements DeudaRepository {
       fechaUltimoPago: deudaData.fechaUltimoPago,
       montoCuota: deudaData.montoCuota,
       fechaAsignacionGestor: deudaData.fechaAsignacionGestor,
+      tasaInteresMoratorio: (deudaData as any).tasaInteresMoratorio,
+      tasaInteresPunitorio: (deudaData as any).tasaInteresPunitorio,
+      fechaExpiracionAcuerdo: (deudaData as any).fechaExpiracionAcuerdo,
       cuotas: cuotasRecuperadas,
     });
   }
@@ -76,6 +79,9 @@ export class PrismaDeudaRepository implements DeudaRepository {
       fechaUltimoPago: deuda.fechaUltimoPago,
       montoCuota: deuda.montoCuota,
       fechaAsignacionGestor: deuda.fechaAsignacionGestor,
+      tasaInteresMoratorio: deuda.tasaInteresMoratorio,
+      tasaInteresPunitorio: deuda.tasaInteresPunitorio,
+      fechaExpiracionAcuerdo: deuda.fechaExpiracionAcuerdo,
     };
 
     // 3. Upsert de la deuda principal
@@ -168,6 +174,68 @@ export class PrismaDeudaRepository implements DeudaRepository {
         fechaUltimoPago: deudaData.fechaUltimoPago,
         montoCuota: deudaData.montoCuota,
         fechaAsignacionGestor: deudaData.fechaAsignacionGestor,
+        tasaInteresMoratorio: (deudaData as any).tasaInteresMoratorio,
+        tasaInteresPunitorio: (deudaData as any).tasaInteresPunitorio,
+        fechaExpiracionAcuerdo: (deudaData as any).fechaExpiracionAcuerdo,
+        cuotas: cuotasRecuperadas,
+      });
+    });
+  }
+
+  async obtenerDeudasParaActualizacionDiaria(): Promise<Deuda[]> {
+    // Deudas que no están en estados finales
+    const estadosActivos: EstadoDeuda[] = [
+      EstadoDeuda.NUEVO,
+      EstadoDeuda.EN_GESTION,
+      EstadoDeuda.CON_ACUERDO,
+      EstadoDeuda.SUSPENDIDA,
+    ];
+    return this.obtenerDeudasConEstado(estadosActivos);
+  }
+
+  async obtenerDeudasConEstado(estados: EstadoDeuda[]): Promise<Deuda[]> {
+    const deudasData = await this.prisma.deudaMaestra.findMany({
+      where: {
+        estadoActual: {
+          nombre: { in: estados }
+        }
+      },
+      include: { cuotas: true, estadoActual: true },
+    });
+    return deudasData.map(deudaData => {
+      const cuotasRecuperadas = deudaData.cuotas.map(cuota => 
+        Cuota.reconstruir({
+          id: cuota.id,
+          numeroCuota: cuota.numeroCuota,
+          fechaVencimiento: cuota.fechaVencimiento,
+          capitalOriginal: cuota.capitalOriginal,
+          saldoCapital: cuota.saldoCapital,
+          interesMoratorioAcumulado: cuota.interesMoratorioAcumulado,
+          interesPunitorioAcumulado: cuota.interesPunitorioAcumulado,
+          estadoCuota: cuota.estadoCuota as unknown as EstadoCuota,
+          fechaUltimoPago: cuota.fechaUltimoPago,
+          montoCuota: cuota.montoCuota,
+        })
+      );
+      return Deuda.reconstruir({
+        id: deudaData.id,
+        acreedor: deudaData.acreedor,
+        concepto: deudaData.concepto,
+        estadoActual: deudaData.estadoActual.nombre as EstadoDeuda,
+        gestorAsignadoId: deudaData.gestorAsignadoId,
+        diasMora: deudaData.diasMora,
+        diasGestion: deudaData.diasGestion,
+        saldoCapitalTotal: deudaData.saldoCapitalTotal,
+        deudaTotal: deudaData.deudaTotal,
+        gastosCobranza: deudaData.gastosCobranza,
+        interesMoratorio: deudaData.interesMoratorio,
+        interesPunitorio: deudaData.interesPunitorio,
+        fechaUltimoPago: deudaData.fechaUltimoPago,
+        montoCuota: deudaData.montoCuota,
+        fechaAsignacionGestor: deudaData.fechaAsignacionGestor,
+        tasaInteresMoratorio: (deudaData as any).tasaInteresMoratorio,
+        tasaInteresPunitorio: (deudaData as any).tasaInteresPunitorio,
+        fechaExpiracionAcuerdo: (deudaData as any).fechaExpiracionAcuerdo,
         cuotas: cuotasRecuperadas,
       });
     });

@@ -8,53 +8,54 @@ import { PrismaSolicitudAutorizacionRepository } from '../../../src/infrastructu
 import { PrismaUsuarioRepository } from '../../../src/infrastructure/repositories/prisma-usuario-repository';
 import { AsignadorSupervisor } from '../../../src/domain/services/asignador-supervisor';
 import { CrearSeguimientoUseCase } from '../../../src/application/use-cases/crear-seguimiento';
+import { createRouteHandler, createProtectedRouteHandler, validateRequestBody } from '../../../src/infrastructure/middleware/with-error-handler';
+import { z } from 'zod';
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { gestorId, personaId, deudaIds, tipoGestionId, observacion, requiereSeguimiento, fechaProximoSeguimiento } = body;
+// Validation schema for creating a seguimiento
+const crearSeguimientoSchema = z.object({
+  gestorId: z.number(),
+  personaId: z.number(),
+  deudaIds: z.array(z.number()).min(1, 'Debe incluir al menos una deuda'),
+  tipoGestionId: z.number(),
+  observacion: z.string().optional(),
+  requiereSeguimiento: z.boolean().optional(),
+  fechaProximoSeguimiento: z.string().datetime().optional(),
+});
 
-    // Validaciones básicas
-    if (!gestorId || !personaId || !deudaIds || !tipoGestionId) {
-      return NextResponse.json(
-        { error: 'Faltan campos obligatorios' },
-        { status: 400 }
-      );
-    }
+type CrearSeguimientoInput = z.infer<typeof crearSeguimientoSchema>;
 
-    const deudaRepository = new PrismaDeudaRepository(prisma);
-    const seguimientoRepository = new PrismaSeguimientoRepository(prisma);
-    const reglaTransicionRepository = new PrismaReglaTransicionRepository(prisma);
-    const transicionEstadoRepository = new PrismaTransicionEstadoRepository(prisma);
-    const solicitudAutorizacionRepository = new PrismaSolicitudAutorizacionRepository(prisma);
-    const usuarioRepository = new PrismaUsuarioRepository(prisma);
-    const asignadorSupervisor = new AsignadorSupervisor(usuarioRepository);
+async function POSTHandler(request: NextRequest) {
+  const body = await validateRequestBody<CrearSeguimientoInput>(request, crearSeguimientoSchema);
 
-    const useCase = new CrearSeguimientoUseCase(
-      deudaRepository,
-      seguimientoRepository,
-      reglaTransicionRepository,
-      transicionEstadoRepository,
-      solicitudAutorizacionRepository,
-      asignadorSupervisor,
-    );
+  const deudaRepository = new PrismaDeudaRepository(prisma);
+  const seguimientoRepository = new PrismaSeguimientoRepository(prisma);
+  const reglaTransicionRepository = new PrismaReglaTransicionRepository(prisma);
+  const transicionEstadoRepository = new PrismaTransicionEstadoRepository(prisma);
+  const solicitudAutorizacionRepository = new PrismaSolicitudAutorizacionRepository(prisma);
+  const usuarioRepository = new PrismaUsuarioRepository(prisma);
+  const asignadorSupervisor = new AsignadorSupervisor(usuarioRepository);
 
-    const result = await useCase.execute({
-      gestorId,
-      personaId,
-      deudaIds,
-      tipoGestionId,
-      observacion,
-      requiereSeguimiento,
-      fechaProximoSeguimiento: fechaProximoSeguimiento ? new Date(fechaProximoSeguimiento) : undefined,
-    });
+  const useCase = new CrearSeguimientoUseCase(
+    deudaRepository,
+    seguimientoRepository,
+    reglaTransicionRepository,
+    transicionEstadoRepository,
+    solicitudAutorizacionRepository,
+    asignadorSupervisor,
+  );
 
-    return NextResponse.json(result, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creando seguimiento:', error);
-    return NextResponse.json(
-      { error: error.message || 'Error interno del servidor' },
-      { status: 500 }
-    );
-  }
+  const result = await useCase.execute({
+    gestorId: body.gestorId,
+    personaId: body.personaId,
+    deudaIds: body.deudaIds,
+    tipoGestionId: body.tipoGestionId,
+    observacion: body.observacion,
+    requiereSeguimiento: body.requiereSeguimiento,
+    fechaProximoSeguimiento: body.fechaProximoSeguimiento ? new Date(body.fechaProximoSeguimiento) : undefined,
+  });
+
+  return NextResponse.json(result, { status: 201 });
 }
+
+// Export wrapped handler with error handling, logging, and rate limiting
+export const POST = createProtectedRouteHandler(POSTHandler);

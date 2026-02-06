@@ -3,66 +3,58 @@ import { prisma } from '../../../src/infrastructure/lib/prisma';
 import { PrismaSolicitudAutorizacionRepository } from '../../../src/infrastructure/repositories/prisma-solicitud-autorizacion-repository';
 import { PrismaDeudaRepository } from '../../../src/infrastructure/repositories/prisma-deuda-repository';
 import { ResolverSolicitudAutorizacionUseCase } from '../../../src/application/use-cases/resolver-solicitud-autorizacion';
+import { createRouteHandler, createProtectedRouteHandler, validateRequestBody } from '../../../src/infrastructure/middleware/with-error-handler';
+import { ValidationError } from '../../../src/domain/errors/app-error';
+import { z } from 'zod';
 
-export async function GET(request: NextRequest) {
-  try {
-    const url = new URL(request.url);
-    const supervisorId = url.searchParams.get('supervisorId');
-    
-    if (!supervisorId) {
-      return NextResponse.json(
-        { error: 'Parámetro supervisorId requerido' },
-        { status: 400 }
-      );
-    }
+// Schemas
+const getAutorizacionesSchema = z.object({
+  supervisorId: z.string().transform((val) => parseInt(val, 10)),
+});
 
-    const solicitudAutorizacionRepository = new PrismaSolicitudAutorizacionRepository(prisma);
-    const solicitudes = await solicitudAutorizacionRepository.buscarPendientesPorSupervisor(parseInt(supervisorId));
+const resolveAutorizacionSchema = z.object({
+  solicitudId: z.number(),
+  supervisorId: z.number(),
+  aprobar: z.boolean(),
+  comentarioSupervisor: z.string().optional(),
+});
 
-    return NextResponse.json({ solicitudes }, { status: 200 });
-  } catch (error: any) {
-    console.error('Error obteniendo solicitudes pendientes:', error);
-    return NextResponse.json(
-      { error: error.message || 'Error interno del servidor' },
-      { status: 500 }
-    );
+// Handlers
+async function GETHandler(request: NextRequest) {
+  const url = new URL(request.url);
+  const supervisorId = url.searchParams.get('supervisorId');
+  
+  if (!supervisorId) {
+    throw new ValidationError('Parámetro supervisorId requerido');
   }
+
+  // Validate query parameters
+  const { supervisorId: validatedSupervisorId } = getAutorizacionesSchema.parse({
+    supervisorId,
+  });
+
+  const solicitudAutorizacionRepository = new PrismaSolicitudAutorizacionRepository(prisma);
+  const solicitudes = await solicitudAutorizacionRepository.buscarPendientesPorSupervisor(validatedSupervisorId);
+
+  return NextResponse.json({ solicitudes }, { status: 200 });
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { solicitudId, supervisorId, aprobar, comentarioSupervisor } = body;
+async function POSTHandler(request: NextRequest) {
+  const body = await validateRequestBody(request, resolveAutorizacionSchema);
 
-    // Validaciones básicas
-    if (!solicitudId || !supervisorId || aprobar === undefined) {
-      return NextResponse.json(
-        { error: 'Faltan campos obligatorios: solicitudId, supervisorId, aprobar' },
-        { status: 400 }
-      );
-    }
+  const solicitudAutorizacionRepository = new PrismaSolicitudAutorizacionRepository(prisma);
+  const deudaRepository = new PrismaDeudaRepository(prisma);
 
-    const solicitudAutorizacionRepository = new PrismaSolicitudAutorizacionRepository(prisma);
-    const deudaRepository = new PrismaDeudaRepository(prisma);
+  const useCase = new ResolverSolicitudAutorizacionUseCase(
+    solicitudAutorizacionRepository,
+    deudaRepository,
+  );
 
-    const useCase = new ResolverSolicitudAutorizacionUseCase(
-      solicitudAutorizacionRepository,
-      deudaRepository,
-    );
+  const result = await useCase.execute(body);
 
-    const result = await useCase.execute({
-      solicitudId,
-      supervisorId,
-      aprobar,
-      comentarioSupervisor,
-    });
-
-    return NextResponse.json(result, { status: 200 });
-  } catch (error: any) {
-    console.error('Error resolviendo solicitud de autorización:', error);
-    return NextResponse.json(
-      { error: error.message || 'Error interno del servidor' },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(result, { status: 200 });
 }
+
+// Export wrapped handlers with error handling, logging, and rate limiting
+export const GET = createProtectedRouteHandler(GETHandler);
+export const POST = createProtectedRouteHandler(POSTHandler);

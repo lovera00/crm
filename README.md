@@ -46,6 +46,11 @@ El sistema sigue una arquitectura hexagonal con las siguientes capas:
 - **Base de datos**: PostgreSQL con Prisma ORM
 - **Testing**: Vitest (100% cobertura en dominio), Playwright (E2E)
 - **Autenticación**: NextAuth.js (pendiente)
+- **Logging**: Pino con logging estructurado
+- **Validación**: Zod para schemas y validación de entrada
+- **Configuración**: Variables de entorno con validación Zod
+- **Contenedores**: Docker y Docker Compose
+- **Rate Limiting**: Middleware personalizado con almacenamiento en memoria
 
 ## Estado actual del desarrollo
 
@@ -60,15 +65,25 @@ El sistema sigue una arquitectura hexagonal con las siguientes capas:
 - Caso de uso: CrearSeguimiento
 - Adaptadores de infraestructura (Prisma)
 - API Route POST /api/seguimientos
+- **Fase 1-4 completadas:** Gestión básica de deudas, seguimientos, reglas de transición, sistema de autorizaciones
+
+✅ **Producción Ready (Fase 5):**
+- Configuración multi-entorno con validación Zod
+- Logging estructurado con Pino (request tracing)
+- Manejo centralizado de errores con jerarquía AppError
+- Validación de entrada con Zod en todas las rutas API
+- Rate limiting por IP (configurable)
+- Health check endpoint
+- Dockerización (desarrollo y producción)
+- Scripts de despliegue
+- Documentación API completa
 
 ⏳ **En progreso:**
-- Tests de dominio al 100% de cobertura
-- Implementación completa de máquina de estados
-- Cálculos automáticos (días de mora, días de gestión, totales)
-- Sistema de autorizaciones
-- UI con componentes React
-- Autenticación con NextAuth.js
+- Autenticación con NextAuth.js y roles
+- UI completa con componentes React
 - Tests E2E con Playwright
+- Dashboard de supervisor
+- Sistema de notificaciones
 
 ## Instalación y configuración
 
@@ -110,6 +125,34 @@ El sistema sigue una arquitectura hexagonal con las siguientes capas:
    npm test
    npm run test:coverage
    ```
+
+### Despliegue en producción
+
+#### Usando Docker Compose (recomendado para desarrollo)
+```bash
+docker-compose up -d
+```
+
+#### Construir imagen de producción
+```bash
+docker build -t crm-cobranzas .
+```
+
+#### Script de despliegue
+```bash
+chmod +x scripts/deploy.sh
+./scripts/deploy.sh
+```
+
+#### Variables de entorno requeridas
+Ver `.env.example` para todas las variables. Las críticas para producción:
+- `DATABASE_URL`: URL de PostgreSQL
+- `NODE_ENV`: production
+- `JWT_SECRET`: secreto para autenticación
+- `LOG_LEVEL`: info o error
+
+#### Health Check
+El endpoint `/api/health` verifica la conectividad con la base de datos y el estado del sistema.
 
 ## Estructura de carpetas
 

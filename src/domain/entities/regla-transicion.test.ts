@@ -21,6 +21,7 @@ describe('ReglaTransicion', () => {
       expect(regla.requiereAutorizacion).toBe(false);
       expect(regla.mensajeUi).toBe('Cambiar a en gestión');
       expect(regla.validacionAdicional).toEqual({ minDias: 30 });
+      expect(regla.prioridad).toBe(0);
       expect(regla.activo).toBe(true);
     });
 
@@ -59,6 +60,7 @@ describe('ReglaTransicion', () => {
         requiereAutorizacion: true,
         mensajeUi: 'Mensaje UI',
         validacionAdicional: { test: true },
+        prioridad: 0,
         activo: false,
       };
 
@@ -104,6 +106,7 @@ describe('ReglaTransicion', () => {
         estadoOrigen: EstadoDeuda.NUEVO,
         estadoDestino: EstadoDeuda.EN_GESTION,
         requiereAutorizacion: false,
+        prioridad: 0,
         activo: false,
       });
 
@@ -177,6 +180,7 @@ describe('ReglaTransicion', () => {
       expect(regla.requiereAutorizacion).toBe(true);
       expect(regla.mensajeUi).toBe('Test mensaje');
       expect(regla.validacionAdicional).toEqual({ campo: 'valor' });
+      expect(regla.prioridad).toBe(0);
       expect(regla.activo).toBe(true);
     });
   });

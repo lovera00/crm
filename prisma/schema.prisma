@@ -376,6 +376,7 @@ model ReglaTransicion {
   requiereAutorizacion    Boolean       @default(false)
   mensajeUi               String?
   validacionAdicional     Json?
+  prioridad               Int           @default(0)
   activo                  Boolean       @default(true)
   creadoPorId             Int?
   creadoPor               Usuario?      @relation("ReglaTransicionCreadaPor", fields: [creadoPorId], references: [id])

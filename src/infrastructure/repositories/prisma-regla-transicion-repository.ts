@@ -20,6 +20,7 @@ export class PrismaReglaTransicionRepository implements ReglaTransicionRepositor
       requiereAutorizacion: regla.requiereAutorizacion,
       mensajeUi: regla.mensajeUi || undefined,
       validacionAdicional: regla.validacionAdicional as any,
+      prioridad: regla.prioridad,
       activo: regla.activo,
     }));
   }

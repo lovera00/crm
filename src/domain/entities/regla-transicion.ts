@@ -8,15 +8,17 @@ export interface ReglaTransicionProps {
   requiereAutorizacion: boolean;
   mensajeUi?: string;
   validacionAdicional?: any;
+  prioridad: number;
   activo: boolean;
 }
 
 export class ReglaTransicion {
   private constructor(private props: ReglaTransicionProps) {}
 
-  public static crear(props: Omit<ReglaTransicionProps, 'activo'>): ReglaTransicion {
+  public static crear(props: Omit<ReglaTransicionProps, 'activo' | 'prioridad'> & { prioridad?: number }): ReglaTransicion {
     const defaultProps: Partial<ReglaTransicionProps> = {
       activo: true,
+      prioridad: 0,
     };
     const mergedProps: ReglaTransicionProps = {
       ...defaultProps,
@@ -55,6 +57,10 @@ export class ReglaTransicion {
 
   get validacionAdicional(): any | undefined {
     return this.props.validacionAdicional;
+  }
+
+  get prioridad(): number {
+    return this.props.prioridad;
   }
 
   get activo(): boolean {

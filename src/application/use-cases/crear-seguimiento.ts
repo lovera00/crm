@@ -11,6 +11,7 @@ import { PrioridadSolicitud } from '../../domain/enums/prioridad-solicitud';
 import { TransicionEstadoRepository } from '../../domain/repositories/transicion-estado-repository';
 import { ValidadorTransicionEstado } from '../../domain/services/validador-transicion-estado';
 import { AsignadorSupervisor } from '../../domain/services/asignador-supervisor';
+import { EvaluadorRegla } from '../../domain/services/evaluador-regla';
 
 export interface CrearSeguimientoInput {
   gestorId: number;
@@ -73,7 +74,8 @@ export class CrearSeguimientoUseCase {
     }> = [];
 
     for (const deuda of deudas) {
-      const reglaAplicable = reglas.find(r => r.aplicaPara(input.tipoGestionId, deuda.estadoActual));
+      // Evaluar reglas aplicables considerando condiciones y prioridad
+      const reglaAplicable = EvaluadorRegla.evaluarReglasConPrioridad(reglas, deuda);
       let nuevoEstado = deuda.estadoActual;
       let requiereAutorizacion = false;
 

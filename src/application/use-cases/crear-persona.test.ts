@@ -75,4 +75,28 @@ describe('CrearPersonaUseCase', () => {
     expect(output.personaId).toBe(100);
     expect(personaRepository.guardar).toHaveBeenCalled();
   });
+
+  it('debería lanzar error si el repositorio no asigna ID después de guardar', async () => {
+    // Mock de guardar que no asigna ID
+    const personaRepositorySinId: PersonaRepository = {
+      buscarPorId: vi.fn(),
+      buscarPorDocumento: vi.fn().mockResolvedValue(null),
+      guardar: vi.fn().mockImplementation(async () => {
+        // No asignar ID
+      }),
+      buscarPorNombreOApellido: vi.fn(),
+      eliminar: vi.fn(),
+    };
+    const useCaseSinId = new CrearPersonaUseCase(personaRepositorySinId);
+
+    const input = {
+      nombres: 'Juan',
+      apellidos: 'Pérez',
+      documento: '12345678',
+    };
+
+    await expect(useCaseSinId.execute(input)).rejects.toThrow(
+      'Error al guardar persona: ID no generado'
+    );
+  });
 });

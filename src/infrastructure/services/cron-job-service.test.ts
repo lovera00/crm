@@ -109,4 +109,67 @@ describe('CronJobService', () => {
       expect(proxima.getUTCHours()).toBe(14);
     });
   });
+
+  describe('ejecución programada', () => {
+    it('debería ejecutar actualización cuando el timer se dispara', async () => {
+      vi.useFakeTimers();
+      const now = new Date('2024-01-01T10:00:00Z');
+      vi.setSystemTime(now);
+
+      const mockExecute = vi.fn().mockResolvedValue({
+        deudasProcesadas: 2,
+        deudasConInteresesAplicados: 1,
+        deudasConEstadoCambiado: 0,
+        interesMoratorioTotal: 5.5,
+        interesPunitorioTotal: 2.3,
+        detalles: [
+          {
+            deudaId: 1,
+            cambios: ['Intereses aplicados'],
+            interesMoratorioAplicado: 5.5,
+            interesPunitorioAplicado: 2.3,
+          },
+        ],
+      });
+      const useCaseWithMock = { execute: mockExecute } as unknown as ActualizarDeudasDiariamenteUseCase;
+      const loggerMock = { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() };
+      const service = new CronJobService(useCaseWithMock, loggerMock, { horaEjecucion: 10, minutoEjecucion: 30 }); // Configurar para que se ejecute pronto
+
+      service.start();
+      
+      // Avanzar el tiempo 30 minutos para que se ejecute (hora de ejecución 10:30, ahora son 10:00)
+      await vi.advanceTimersByTimeAsync(30 * 60 * 1000);
+      
+      expect(mockExecute).toHaveBeenCalled();
+      expect(loggerMock.info).toHaveBeenCalledWith('Iniciando actualización diaria de deudas', expect.any(Object));
+      expect(loggerMock.debug).toHaveBeenCalledWith('Deuda 1: Intereses aplicados', expect.any(Object));
+      
+      vi.useRealTimers();
+    });
+  });
+
+  describe('ConsoleLogger', () => {
+    it('debería loggear mensajes en consola', () => {
+      const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
+      const logger = new ConsoleLogger();
+      logger.info('Mensaje info', { data: 'test' });
+      logger.warn('Mensaje warn');
+      logger.error('Mensaje error', { error: 'something' });
+      logger.debug('Mensaje debug');
+
+      expect(consoleLogSpy).toHaveBeenCalledWith('[INFO] Mensaje info', { data: 'test' });
+      expect(consoleWarnSpy).toHaveBeenCalledWith('[WARN] Mensaje warn', '');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] Mensaje error', { error: 'something' });
+      expect(consoleDebugSpy).toHaveBeenCalledWith('[DEBUG] Mensaje debug', '');
+
+      consoleLogSpy.mockRestore();
+      consoleWarnSpy.mockRestore();
+      consoleErrorSpy.mockRestore();
+      consoleDebugSpy.mockRestore();
+    });
+  });
 });

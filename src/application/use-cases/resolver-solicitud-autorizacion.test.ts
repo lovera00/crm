@@ -179,4 +179,65 @@ describe('ResolverSolicitudAutorizacionUseCase', () => {
       expect(solicitudAutorizacionRepository.actualizar).toHaveBeenCalledWith(solicitud);
     });
   });
+
+  it('debería lanzar error cuando solicitud no existe', async () => {
+    vi.mocked(solicitudAutorizacionRepository.buscarPorId).mockResolvedValue(null);
+
+    const input = {
+      solicitudId: 999,
+      supervisorId: 200,
+      aprobar: true,
+    };
+
+    await expect(useCase.execute(input)).rejects.toThrow('Solicitud de autorización con ID 999 no encontrada');
+  });
+
+  it('debería lanzar error cuando solicitud ya ha sido resuelta', async () => {
+    const solicitud = SolicitudAutorizacion.crear({
+      seguimientoId: 1,
+      deudaMaestraId: 100,
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.EN_GESTION,
+      gestorSolicitanteId: 50,
+      prioridad: PrioridadSolicitud.MEDIA,
+    });
+    solicitud.asignarSupervisor(200);
+    solicitud.asignarId(500);
+    // Marcar como aprobada (ya resuelta)
+    solicitud.aprobar('Comentario');
+
+    vi.mocked(solicitudAutorizacionRepository.buscarPorId).mockResolvedValue(solicitud);
+
+    const input = {
+      solicitudId: 500,
+      supervisorId: 200,
+      aprobar: true,
+    };
+
+    await expect(useCase.execute(input)).rejects.toThrow('La solicitud ya ha sido resuelta');
+  });
+
+  it('debería lanzar error cuando deuda no existe', async () => {
+    const solicitud = SolicitudAutorizacion.crear({
+      seguimientoId: 1,
+      deudaMaestraId: 100,
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.EN_GESTION,
+      gestorSolicitanteId: 50,
+      prioridad: PrioridadSolicitud.MEDIA,
+    });
+    solicitud.asignarSupervisor(200);
+    solicitud.asignarId(500);
+
+    vi.mocked(solicitudAutorizacionRepository.buscarPorId).mockResolvedValue(solicitud);
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(null);
+
+    const input = {
+      solicitudId: 500,
+      supervisorId: 200,
+      aprobar: true,
+    };
+
+    await expect(useCase.execute(input)).rejects.toThrow('Deuda con ID 100 no encontrada');
+  });
 });

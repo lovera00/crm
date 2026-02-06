@@ -309,4 +309,157 @@ describe('CrearSeguimientoUseCase', () => {
     // Prioridad MEDIA por defecto (deudaTotal no configurada en test)
     expect(solicitudAutorizacionRepository.crear).toHaveBeenCalled();
   });
+
+  it('debería lanzar error cuando deuda no existe', async () => {
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(null);
+
+    const input = {
+      gestorId: 100,
+      personaId: 200,
+      deudaIds: [999],
+      tipoGestionId: 5,
+      observacion: 'Test',
+    };
+
+    await expect(useCase.execute(input)).rejects.toThrow('Deuda con ID 999 no encontrada');
+  });
+
+  it('debería lanzar error cuando deuda no está asignada al gestor', async () => {
+    const deudaMock = Deuda.crear({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo',
+      gestorAsignadoId: 200, // Diferente al gestor en input
+      montoCuota: null,
+    });
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(deudaMock);
+
+    const input = {
+      gestorId: 100, // Gestor diferente
+      personaId: 200,
+      deudaIds: [1],
+      tipoGestionId: 5,
+      observacion: 'Test',
+    };
+
+    await expect(useCase.execute(input)).rejects.toThrow('Deuda 1 no asignada al gestor');
+  });
+
+  it('debería asignar prioridad ALTA para deuda con monto mayor a 100000', async () => {
+    // Crear deuda con monto alto usando reconstruir
+    const deudaMock = Deuda.reconstruir({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo grande',
+      estadoActual: EstadoDeuda.NUEVO,
+      gestorAsignadoId: 100,
+      diasMora: 0,
+      diasGestion: 0,
+      saldoCapitalTotal: 150000,
+      deudaTotal: 150000, // Mayor a 100000
+      gastosCobranza: 0,
+      interesMoratorio: 0,
+      interesPunitorio: 0,
+      fechaUltimoPago: null,
+      montoCuota: null,
+      fechaAsignacionGestor: null,
+      tasaInteresMoratorio: null,
+      tasaInteresPunitorio: null,
+      fechaExpiracionAcuerdo: null,
+      cuotas: [],
+    });
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(deudaMock);
+
+    const reglaMock = ReglaTransicion.crear({
+      tipoGestionId: 5,
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.CON_ACUERDO,
+      requiereAutorizacion: true,
+    });
+    vi.mocked(reglaTransicionRepository.buscarPorTipoGestion).mockResolvedValue([reglaMock]);
+
+    const input = {
+      gestorId: 100,
+      personaId: 200,
+      deudaIds: [1],
+      tipoGestionId: 5,
+      observacion: 'Solicito acuerdo',
+    };
+
+    vi.mocked(transicionEstadoRepository.obtenerTransicion).mockResolvedValue({
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.CON_ACUERDO,
+      requiereAutorizacion: true,
+      descripcion: 'Transición con autorización',
+    });
+
+    // Espiar la creación de solicitud para verificar prioridad
+    const crearSpy = vi.spyOn(solicitudAutorizacionRepository, 'crear');
+    
+    await useCase.execute(input);
+    
+    expect(crearSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prioridad: 'Alta' // PrioridadSolicitud.ALTA
+      })
+    );
+  });
+
+  it('debería asignar prioridad BAJA para deuda con monto menor a 10000', async () => {
+    const deudaMock = Deuda.reconstruir({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo pequeño',
+      estadoActual: EstadoDeuda.NUEVO,
+      gestorAsignadoId: 100,
+      diasMora: 0,
+      diasGestion: 0,
+      saldoCapitalTotal: 5000,
+      deudaTotal: 5000, // Menor a 10000
+      gastosCobranza: 0,
+      interesMoratorio: 0,
+      interesPunitorio: 0,
+      fechaUltimoPago: null,
+      montoCuota: null,
+      fechaAsignacionGestor: null,
+      tasaInteresMoratorio: null,
+      tasaInteresPunitorio: null,
+      fechaExpiracionAcuerdo: null,
+      cuotas: [],
+    });
+    vi.mocked(deudaRepository.buscarPorId).mockResolvedValue(deudaMock);
+
+    const reglaMock = ReglaTransicion.crear({
+      tipoGestionId: 5,
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.CON_ACUERDO,
+      requiereAutorizacion: true,
+    });
+    vi.mocked(reglaTransicionRepository.buscarPorTipoGestion).mockResolvedValue([reglaMock]);
+
+    const input = {
+      gestorId: 100,
+      personaId: 200,
+      deudaIds: [1],
+      tipoGestionId: 5,
+      observacion: 'Solicito acuerdo',
+    };
+
+    vi.mocked(transicionEstadoRepository.obtenerTransicion).mockResolvedValue({
+      estadoOrigen: EstadoDeuda.NUEVO,
+      estadoDestino: EstadoDeuda.CON_ACUERDO,
+      requiereAutorizacion: true,
+      descripcion: 'Transición con autorización',
+    });
+
+    const crearSpy = vi.spyOn(solicitudAutorizacionRepository, 'crear');
+    
+    await useCase.execute(input);
+    
+    expect(crearSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prioridad: 'Baja' // PrioridadSolicitud.BAJA
+      })
+    );
+  });
 });

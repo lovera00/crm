@@ -258,4 +258,48 @@ describe('ActualizarDeudasDiariamenteUseCase', () => {
 
     expect(resultado.detalles[0].cambios).toContain('1 cuotas actualizadas a vencidas');
   });
+
+  it('no debería cambiar estado cuando acuerdo expira pero transición no es válida', async () => {
+    const deuda = Deuda.reconstruir({
+      id: 1,
+      acreedor: 'Banco',
+      concepto: 'Préstamo',
+      estadoActual: EstadoDeuda.CON_ACUERDO,
+      gestorAsignadoId: 1,
+      diasMora: 10,
+      diasGestion: 5,
+      saldoCapitalTotal: 1000,
+      deudaTotal: 1000,
+      gastosCobranza: 0,
+      interesMoratorio: 0,
+      interesPunitorio: 0,
+      fechaUltimoPago: null,
+      montoCuota: null,
+      fechaAsignacionGestor: new Date('2024-01-01'),
+      tasaInteresMoratorio: null,
+      tasaInteresPunitorio: null,
+      fechaExpiracionAcuerdo: new Date('2024-01-05'), // Expiró
+      cuotas: [],
+    });
+
+    deudaRepository.obtenerDeudasParaActualizacionDiaria = vi.fn().mockResolvedValue([deuda]);
+    deudaRepository.guardar = vi.fn().mockImplementation((d) => Promise.resolve(d));
+    interesAcumulador.aplicarInteresDiario = vi.fn().mockReturnValue({
+      cuotasActualizadas: [],
+      interesMoratorioTotal: 0,
+      interesPunitorioTotal: 0,
+    });
+    interesAcumulador.actualizarEstadoCuotasPorVencimiento = vi.fn().mockReturnValue([]);
+    transicionEstadoRepository.obtenerTransicion = vi.fn().mockResolvedValue(null);
+    transicionEstadoRepository.esTransicionValida = vi.fn().mockResolvedValue(false);
+
+    const fechaReferencia = new Date('2024-01-10');
+    const resultado = await useCase.execute({ fechaReferencia });
+
+    expect(resultado.deudasConEstadoCambiado).toBe(0);
+    expect(resultado.detalles[0].estadoCambiado).toBeUndefined();
+    // Verificar que no se incluye el cambio de estado
+    const cambios = resultado.detalles[0].cambios;
+    expect(cambios.some(c => c.includes('Acuerdo expirado'))).toBe(false);
+  });
 });

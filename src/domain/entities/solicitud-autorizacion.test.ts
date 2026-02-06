@@ -166,4 +166,42 @@ describe('SolicitudAutorizacion', () => {
       expect(() => solicitud.expirar()).toThrow('Solo se pueden expirar solicitudes pendientes');
     });
   });
+
+  describe('reconstruir', () => {
+    it('debería reconstruir una solicitud con propiedades completas', () => {
+      const props = {
+        id: 123,
+        seguimientoId: 1,
+        deudaMaestraId: 100,
+        estadoOrigen: EstadoDeuda.NUEVO,
+        estadoDestino: EstadoDeuda.EN_GESTION,
+        gestorSolicitanteId: 50,
+        supervisorAsignadoId: 200,
+        estadoSolicitud: EstadoSolicitud.APROBADA,
+        fechaSolicitud: new Date('2024-01-01'),
+        fechaResolucion: new Date('2024-01-02'),
+        comentarioSolicitante: 'Solicito',
+        comentarioSupervisor: 'Aprobado',
+        prioridad: PrioridadSolicitud.ALTA,
+      };
+
+      const solicitud = SolicitudAutorizacion.reconstruir(props);
+
+      expect(solicitud.id).toBe(123);
+      expect(solicitud.seguimientoId).toBe(1);
+      expect(solicitud.deudaMaestraId).toBe(100);
+      expect(solicitud.estadoOrigen).toBe(EstadoDeuda.NUEVO);
+      expect(solicitud.estadoDestino).toBe(EstadoDeuda.EN_GESTION);
+      expect(solicitud.gestorSolicitanteId).toBe(50);
+      expect(solicitud.supervisorAsignadoId).toBe(200);
+      expect(solicitud.estadoSolicitud).toBe(EstadoSolicitud.APROBADA);
+      expect(solicitud.fechaSolicitud).toEqual(new Date('2024-01-01'));
+      expect(solicitud.fechaResolucion).toEqual(new Date('2024-01-02'));
+      expect(solicitud.comentarioSolicitante).toBe('Solicito');
+      expect(solicitud.comentarioSupervisor).toBe('Aprobado');
+      expect(solicitud.prioridad).toBe(PrioridadSolicitud.ALTA);
+      expect(solicitud.estaPendiente).toBe(false);
+      expect(solicitud.estaAprobada).toBe(true);
+    });
+  });
 });

@@ -342,4 +342,218 @@ describe('Deuda', () => {
       expect(deuda.estadoActual).toBe(EstadoDeuda.NUEVO);
     });
   });
+
+  describe('getters y métodos auxiliares', () => {
+    it('debería retornar true para estados finales', () => {
+      const estadosFinales = [
+        EstadoDeuda.CANCELADA,
+        EstadoDeuda.INCOBRABLE,
+        EstadoDeuda.JUDICIALIZADA,
+        EstadoDeuda.FALLECIDO,
+      ];
+
+      estadosFinales.forEach(estadoFinal => {
+        const deuda = Deuda.reconstruir({
+          id: 1,
+          acreedor: 'Banco',
+          concepto: 'Préstamo',
+          estadoActual: estadoFinal,
+          gestorAsignadoId: 1,
+          diasMora: 0,
+          diasGestion: 0,
+          saldoCapitalTotal: 1000,
+          deudaTotal: 1000,
+          gastosCobranza: 0,
+          interesMoratorio: 0,
+          interesPunitorio: 0,
+          fechaUltimoPago: null,
+          montoCuota: null,
+          fechaAsignacionGestor: null,
+          tasaInteresMoratorio: null,
+          tasaInteresPunitorio: null,
+          fechaExpiracionAcuerdo: null,
+          cuotas: [],
+        });
+
+        expect(deuda.esEstadoFinal()).toBe(true);
+      });
+    });
+
+    it('debería retornar false para estados no finales', () => {
+      const estadosNoFinales = [
+        EstadoDeuda.NUEVO,
+        EstadoDeuda.EN_GESTION,
+        EstadoDeuda.CON_ACUERDO,
+        EstadoDeuda.SUSPENDIDA,
+      ];
+
+      estadosNoFinales.forEach(estado => {
+        const deuda = Deuda.reconstruir({
+          id: 1,
+          acreedor: 'Banco',
+          concepto: 'Préstamo',
+          estadoActual: estado,
+          gestorAsignadoId: 1,
+          diasMora: 0,
+          diasGestion: 0,
+          saldoCapitalTotal: 1000,
+          deudaTotal: 1000,
+          gastosCobranza: 0,
+          interesMoratorio: 0,
+          interesPunitorio: 0,
+          fechaUltimoPago: null,
+          montoCuota: null,
+          fechaAsignacionGestor: null,
+          tasaInteresMoratorio: null,
+          tasaInteresPunitorio: null,
+          fechaExpiracionAcuerdo: null,
+          cuotas: [],
+        });
+
+        expect(deuda.esEstadoFinal()).toBe(false);
+      });
+    });
+
+    it('debería retornar false para acuerdo no expirado', () => {
+      const deuda = Deuda.reconstruir({
+        id: 1,
+        acreedor: 'Banco',
+        concepto: 'Préstamo',
+        estadoActual: EstadoDeuda.CON_ACUERDO,
+        gestorAsignadoId: 1,
+        diasMora: 0,
+        diasGestion: 0,
+        saldoCapitalTotal: 1000,
+        deudaTotal: 1000,
+        gastosCobranza: 0,
+        interesMoratorio: 0,
+        interesPunitorio: 0,
+        fechaUltimoPago: null,
+        montoCuota: null,
+        fechaAsignacionGestor: null,
+        tasaInteresMoratorio: null,
+        tasaInteresPunitorio: null,
+        fechaExpiracionAcuerdo: new Date('2024-12-31'), // Futuro
+        cuotas: [],
+      });
+
+      const fechaReferencia = new Date('2024-06-01');
+      expect(deuda.estaAcuerdoExpirado(fechaReferencia)).toBe(false);
+    });
+
+    it('debería retornar true para acuerdo expirado', () => {
+      const deuda = Deuda.reconstruir({
+        id: 1,
+        acreedor: 'Banco',
+        concepto: 'Préstamo',
+        estadoActual: EstadoDeuda.CON_ACUERDO,
+        gestorAsignadoId: 1,
+        diasMora: 0,
+        diasGestion: 0,
+        saldoCapitalTotal: 1000,
+        deudaTotal: 1000,
+        gastosCobranza: 0,
+        interesMoratorio: 0,
+        interesPunitorio: 0,
+        fechaUltimoPago: null,
+        montoCuota: null,
+        fechaAsignacionGestor: null,
+        tasaInteresMoratorio: null,
+        tasaInteresPunitorio: null,
+        fechaExpiracionAcuerdo: new Date('2024-01-01'), // Pasado
+        cuotas: [],
+      });
+
+      const fechaReferencia = new Date('2024-06-01');
+      expect(deuda.estaAcuerdoExpirado(fechaReferencia)).toBe(true);
+    });
+
+    it('debería retornar false cuando no está en estado CON_ACUERDO', () => {
+      const deuda = Deuda.reconstruir({
+        id: 1,
+        acreedor: 'Banco',
+        concepto: 'Préstamo',
+        estadoActual: EstadoDeuda.EN_GESTION,
+        gestorAsignadoId: 1,
+        diasMora: 0,
+        diasGestion: 0,
+        saldoCapitalTotal: 1000,
+        deudaTotal: 1000,
+        gastosCobranza: 0,
+        interesMoratorio: 0,
+        interesPunitorio: 0,
+        fechaUltimoPago: null,
+        montoCuota: null,
+        fechaAsignacionGestor: null,
+        tasaInteresMoratorio: null,
+        tasaInteresPunitorio: null,
+        fechaExpiracionAcuerdo: new Date('2024-01-01'), // Pasado
+        cuotas: [],
+      });
+
+      const fechaReferencia = new Date('2024-06-01');
+      expect(deuda.estaAcuerdoExpirado(fechaReferencia)).toBe(false);
+    });
+
+    it('debería retornar false cuando fechaExpiracionAcuerdo es null', () => {
+      const deuda = Deuda.reconstruir({
+        id: 1,
+        acreedor: 'Banco',
+        concepto: 'Préstamo',
+        estadoActual: EstadoDeuda.CON_ACUERDO,
+        gestorAsignadoId: 1,
+        diasMora: 0,
+        diasGestion: 0,
+        saldoCapitalTotal: 1000,
+        deudaTotal: 1000,
+        gastosCobranza: 0,
+        interesMoratorio: 0,
+        interesPunitorio: 0,
+        fechaUltimoPago: null,
+        montoCuota: null,
+        fechaAsignacionGestor: null,
+        tasaInteresMoratorio: null,
+        tasaInteresPunitorio: null,
+        fechaExpiracionAcuerdo: null,
+        cuotas: [],
+      });
+
+      const fechaReferencia = new Date('2024-06-01');
+      expect(deuda.estaAcuerdoExpirado(fechaReferencia)).toBe(false);
+    });
+
+    it('debería retornar valores correctos para getters de interés', () => {
+      const deuda = Deuda.reconstruir({
+        id: 1,
+        acreedor: 'Banco',
+        concepto: 'Préstamo',
+        estadoActual: EstadoDeuda.NUEVO,
+        gestorAsignadoId: 1,
+        diasMora: 0,
+        diasGestion: 0,
+        saldoCapitalTotal: 1000,
+        deudaTotal: 1000,
+        gastosCobranza: 50,
+        interesMoratorio: 25.5,
+        interesPunitorio: 15.75,
+        fechaUltimoPago: new Date('2024-01-01'),
+        montoCuota: 200,
+        fechaAsignacionGestor: new Date('2024-01-15'),
+        tasaInteresMoratorio: 10.5,
+        tasaInteresPunitorio: 5.25,
+        fechaExpiracionAcuerdo: new Date('2024-12-31'),
+        cuotas: [],
+      });
+
+      expect(deuda.interesMoratorio).toBe(25.5);
+      expect(deuda.interesPunitorio).toBe(15.75);
+      expect(deuda.fechaUltimoPago).toEqual(new Date('2024-01-01'));
+      expect(deuda.montoCuota).toBe(200);
+      expect(deuda.fechaAsignacionGestor).toEqual(new Date('2024-01-15'));
+      expect(deuda.tasaInteresMoratorio).toBe(10.5);
+      expect(deuda.tasaInteresPunitorio).toBe(5.25);
+      expect(deuda.fechaExpiracionAcuerdo).toEqual(new Date('2024-12-31'));
+      expect(deuda.cuotas).toEqual([]);
+    });
+  });
 });

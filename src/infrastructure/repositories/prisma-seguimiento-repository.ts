@@ -1,12 +1,12 @@
 import { Seguimiento } from '../../domain/entities/seguimiento';
 import { SeguimientoRepository } from '../../domain/repositories/seguimiento-repository';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/client';
 
 export class PrismaSeguimientoRepository implements SeguimientoRepository {
   constructor(private prisma: PrismaClient) {}
 
   async guardar(seguimiento: Seguimiento): Promise<void> {
-    await this.prisma.seguimiento.create({
+    const seguimientoCreado = await this.prisma.seguimiento.create({
       data: {
         gestorId: seguimiento.gestorId,
         personaId: seguimiento.personaId,
@@ -17,5 +17,6 @@ export class PrismaSeguimientoRepository implements SeguimientoRepository {
         fechaProximoSeguimiento: seguimiento.fechaProximoSeguimiento,
       },
     });
+    seguimiento.asignarId(seguimientoCreado.id);
   }
 }

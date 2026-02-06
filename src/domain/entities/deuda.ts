@@ -49,9 +49,18 @@ export class Deuda {
     return deuda;
   }
 
+  public static reconstruir(props: DeudaProps): Deuda {
+    return new Deuda(props);
+  }
+
   cambiarEstado(nuevoEstado: EstadoDeuda): void {
     // Validar transición permitida (pendiente de implementar)
     this.props.estadoActual = nuevoEstado;
+  }
+
+  asignarGestor(gestorId: number, fechaAsignacion: Date = new Date()): void {
+    this.props.gestorAsignadoId = gestorId;
+    this.props.fechaAsignacionGestor = fechaAsignacion;
   }
 
   calcularDiasMora(fechaReferencia: Date): number {

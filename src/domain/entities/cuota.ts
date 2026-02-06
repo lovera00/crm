@@ -31,6 +31,10 @@ export class Cuota {
     return new Cuota(mergedProps);
   }
 
+  public static reconstruir(props: CuotaProps): Cuota {
+    return new Cuota(props);
+  }
+
   get id(): number | undefined {
     return this.props.id;
   }

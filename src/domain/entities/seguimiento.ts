@@ -24,6 +24,10 @@ export class Seguimiento {
     return new Seguimiento(mergedProps);
   }
 
+  asignarId(id: number): void {
+    this.props.id = id;
+  }
+
   get id(): number | undefined {
     return this.props.id;
   }

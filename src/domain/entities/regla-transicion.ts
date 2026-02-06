@@ -25,6 +25,10 @@ export class ReglaTransicion {
     return new ReglaTransicion(mergedProps);
   }
 
+  public static reconstruir(props: ReglaTransicionProps): ReglaTransicion {
+    return new ReglaTransicion(props);
+  }
+
   get id(): number | undefined {
     return this.props.id;
   }

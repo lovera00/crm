@@ -3,6 +3,10 @@ import { prisma } from '../../../src/infrastructure/lib/prisma';
 import { PrismaDeudaRepository } from '../../../src/infrastructure/repositories/prisma-deuda-repository';
 import { PrismaSeguimientoRepository } from '../../../src/infrastructure/repositories/prisma-seguimiento-repository';
 import { PrismaReglaTransicionRepository } from '../../../src/infrastructure/repositories/prisma-regla-transicion-repository';
+import { PrismaTransicionEstadoRepository } from '../../../src/infrastructure/repositories/prisma-transicion-estado-repository';
+import { PrismaSolicitudAutorizacionRepository } from '../../../src/infrastructure/repositories/prisma-solicitud-autorizacion-repository';
+import { PrismaUsuarioRepository } from '../../../src/infrastructure/repositories/prisma-usuario-repository';
+import { AsignadorSupervisor } from '../../../src/domain/services/asignador-supervisor';
 import { CrearSeguimientoUseCase } from '../../../src/application/use-cases/crear-seguimiento';
 
 export async function POST(request: NextRequest) {
@@ -21,11 +25,18 @@ export async function POST(request: NextRequest) {
     const deudaRepository = new PrismaDeudaRepository(prisma);
     const seguimientoRepository = new PrismaSeguimientoRepository(prisma);
     const reglaTransicionRepository = new PrismaReglaTransicionRepository(prisma);
+    const transicionEstadoRepository = new PrismaTransicionEstadoRepository(prisma);
+    const solicitudAutorizacionRepository = new PrismaSolicitudAutorizacionRepository(prisma);
+    const usuarioRepository = new PrismaUsuarioRepository(prisma);
+    const asignadorSupervisor = new AsignadorSupervisor(usuarioRepository);
 
     const useCase = new CrearSeguimientoUseCase(
       deudaRepository,
       seguimientoRepository,
       reglaTransicionRepository,
+      transicionEstadoRepository,
+      solicitudAutorizacionRepository,
+      asignadorSupervisor,
     );
 
     const result = await useCase.execute({

@@ -1,6 +1,6 @@
 import { ReglaTransicion } from '../../domain/entities/regla-transicion';
 import { ReglaTransicionRepository } from '../../domain/repositories/regla-transicion-repository';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/prisma/client';
 import { EstadoDeuda } from '../../domain/enums/estado-deuda';
 
 export class PrismaReglaTransicionRepository implements ReglaTransicionRepository {
@@ -12,7 +12,7 @@ export class PrismaReglaTransicionRepository implements ReglaTransicionRepositor
       include: { estadoOrigen: true, estadoDestino: true },
     });
 
-    return reglas.map(regla => ReglaTransicion.crear({
+    return reglas.map((regla: any) => ReglaTransicion.reconstruir({
       id: regla.id,
       tipoGestionId: regla.tipoGestionId,
       estadoOrigen: regla.estadoOrigen?.nombre as EstadoDeuda || null,

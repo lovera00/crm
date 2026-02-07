@@ -28,6 +28,7 @@ describe('ResolverSolicitudAutorizacionUseCase', () => {
       buscarPorGestor: vi.fn(),
       obtenerDeudasParaActualizacionDiaria: vi.fn().mockResolvedValue([]),
       obtenerDeudasConEstado: vi.fn().mockResolvedValue([]),
+      buscarConPaginacion: vi.fn().mockResolvedValue({ deudas: [], total: 0 }),
     };
     useCase = new ResolverSolicitudAutorizacionUseCase(
       solicitudAutorizacionRepository,

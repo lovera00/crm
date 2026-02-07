@@ -1,7 +1,7 @@
 import { ReferenciaLaboral } from '../../domain/entities/referencia-laboral';
 import { ReferenciaLaboralRepository } from '../../domain/repositories/referencia-laboral-repository';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaReferenciaLaboralRepository implements ReferenciaLaboralRepository {
   constructor(private prisma: PrismaClient) {}

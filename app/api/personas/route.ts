@@ -59,20 +59,14 @@ async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
 
   const personaRepository = new PrismaPersonaRepository(prisma);
   
-  let personas;
-  if (query.search) {
-    personas = await personaRepository.buscarPorNombreOApellido(query.search);
-  } else {
-    // For simplicity, return empty array (we need pagination method in repository)
-    // We'll implement a new method later
-    personas = await personaRepository.buscarPorNombreOApellido('');
-  }
-
-  // Apply simple client-side pagination (not efficient)
-  const paginated = personas.slice(query.offset, query.offset + query.limit);
+  const { personas, total } = await personaRepository.buscarConPaginacion({
+    termino: query.search,
+    limit: query.limit,
+    offset: query.offset,
+  });
 
   return NextResponse.json({
-    personas: paginated.map(p => ({
+    personas: personas.map(p => ({
       id: p.id,
       nombres: p.nombres,
       apellidos: p.apellidos,
@@ -81,7 +75,7 @@ async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
       jubilado: p.jubilado,
       ipsActivo: p.ipsActivo,
     })),
-    total: personas.length,
+    total,
     limit: query.limit,
     offset: query.offset,
   });

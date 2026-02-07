@@ -2,7 +2,7 @@ import { SolicitudAutorizacionRepository } from '../../domain/repositories/solic
 import { SolicitudAutorizacion } from '../../domain/entities/solicitud-autorizacion';
 import { EstadoSolicitud } from '../../domain/enums/estado-solicitud';
 import { PrioridadSolicitud } from '../../domain/enums/prioridad-solicitud';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaSolicitudAutorizacionRepository implements SolicitudAutorizacionRepository {
   constructor(private prisma: PrismaClient) {}

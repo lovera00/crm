@@ -1,5 +1,5 @@
 import { UsuarioRepository, Usuario } from '../../domain/repositories/usuario-repository';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaUsuarioRepository implements UsuarioRepository {
   constructor(private prisma: PrismaClient) {}

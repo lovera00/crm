@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PrismaPersonaRepository } from './prisma-persona-repository';
-import { PrismaClient, EstadoVerificacion as PrismaEstadoVerificacion, EstadoContacto as PrismaEstadoContacto } from '../../generated/prisma';
+import { PrismaClient, EstadoVerificacion as PrismaEstadoVerificacion, EstadoContacto as PrismaEstadoContacto } from '../../generated/client';
 import { Persona } from '../../domain/entities/persona';
 import { Telefono } from '../../domain/entities/telefono';
 import { Email } from '../../domain/entities/email';
@@ -231,11 +231,16 @@ describe('PrismaPersonaRepository', () => {
       expect(prisma.persona.findMany).toHaveBeenCalledWith({
         where: {
           OR: [
-            { nombres: { contains: 'inexistente', mode: 'insensitive' } },
-            { apellidos: { contains: 'inexistente', mode: 'insensitive' } },
+            { nombres: { contains: 'inexistente' } },
+            { apellidos: { contains: 'inexistente' } },
           ],
         },
-        include: expect.any(Object),
+        include: {
+          telefonos: true,
+          emails: true,
+          referenciasPersonales: true,
+          referenciasLaborales: true,
+        },
         take: 50,
       });
     });

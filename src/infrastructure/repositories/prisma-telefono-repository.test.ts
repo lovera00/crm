@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PrismaTelefonoRepository } from './prisma-telefono-repository';
-import { PrismaClient, EstadoContacto as PrismaEstadoContacto } from '../../generated/prisma';
+import { PrismaClient, EstadoContacto as PrismaEstadoContacto } from '../../generated/client';
 import { Telefono } from '../../domain/entities/telefono';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
 

@@ -1,7 +1,7 @@
 import { Email } from '../../domain/entities/email';
 import { EmailRepository } from '../../domain/repositories/email-repository';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaEmailRepository implements EmailRepository {
   constructor(private prisma: PrismaClient) {}

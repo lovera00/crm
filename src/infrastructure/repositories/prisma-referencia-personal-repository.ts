@@ -1,7 +1,7 @@
 import { ReferenciaPersonal } from '../../domain/entities/referencia-personal';
 import { ReferenciaPersonalRepository } from '../../domain/repositories/referencia-personal-repository';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaReferenciaPersonalRepository implements ReferenciaPersonalRepository {
   constructor(private prisma: PrismaClient) {}

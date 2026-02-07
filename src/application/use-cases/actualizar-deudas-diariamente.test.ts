@@ -22,6 +22,7 @@ describe('ActualizarDeudasDiariamenteUseCase', () => {
       buscarPorGestor: vi.fn(),
       obtenerDeudasParaActualizacionDiaria: vi.fn().mockResolvedValue([]),
       obtenerDeudasConEstado: vi.fn().mockResolvedValue([]),
+      buscarConPaginacion: vi.fn().mockResolvedValue({ deudas: [], total: 0 }),
     };
     transicionEstadoRepository = {
       esTransicionValida: vi.fn(),

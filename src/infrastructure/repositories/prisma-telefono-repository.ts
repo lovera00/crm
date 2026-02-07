@@ -1,7 +1,7 @@
 import { Telefono } from '../../domain/entities/telefono';
 import { TelefonoRepository } from '../../domain/repositories/telefono-repository';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaTelefonoRepository implements TelefonoRepository {
   constructor(private prisma: PrismaClient) {}

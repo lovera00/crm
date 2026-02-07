@@ -5,5 +5,10 @@ export interface PersonaRepository {
   buscarPorDocumento(documento: string): Promise<Persona | null>;
   guardar(persona: Persona): Promise<void>;
   buscarPorNombreOApellido(termino: string): Promise<Persona[]>;
+  buscarConPaginacion(options: {
+    termino?: string;
+    limit: number;
+    offset: number;
+  }): Promise<{ personas: Persona[]; total: number }>;
   eliminar(id: number): Promise<void>;
 }

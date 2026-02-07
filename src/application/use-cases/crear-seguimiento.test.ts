@@ -27,6 +27,7 @@ describe('CrearSeguimientoUseCase', () => {
       buscarPorGestor: vi.fn(),
       obtenerDeudasParaActualizacionDiaria: vi.fn().mockResolvedValue([]),
       obtenerDeudasConEstado: vi.fn().mockResolvedValue([]),
+      buscarConPaginacion: vi.fn().mockResolvedValue({ deudas: [], total: 0 }),
     };
     seguimientoRepository = {
       guardar: vi.fn().mockImplementation((seguimiento) => {

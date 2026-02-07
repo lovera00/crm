@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PrismaReferenciaPersonalRepository } from './prisma-referencia-personal-repository';
-import { PrismaClient, EstadoContacto as PrismaEstadoContacto } from '../../generated/prisma';
+import { PrismaClient, EstadoContacto as PrismaEstadoContacto } from '../../generated/client';
 import { ReferenciaPersonal } from '../../domain/entities/referencia-personal';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
 

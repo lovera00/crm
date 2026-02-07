@@ -4,7 +4,7 @@ import { Email } from '../../domain/entities/email';
 import { ReferenciaPersonal } from '../../domain/entities/referencia-personal';
 import { ReferenciaLaboral } from '../../domain/entities/referencia-laboral';
 import { PersonaRepository } from '../../domain/repositories/persona-repository';
-import { PrismaClient, EstadoVerificacion as PrismaEstadoVerificacion } from '../../generated/prisma';
+import { PrismaClient, EstadoVerificacion as PrismaEstadoVerificacion } from '../../generated/client';
 import { EstadoVerificacion } from '../../domain/enums/estado-verificacion';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
 
@@ -105,8 +105,8 @@ export class PrismaPersonaRepository implements PersonaRepository {
     const personasData = await this.prisma.persona.findMany({
       where: {
         OR: [
-          { nombres: { contains: termino, mode: 'insensitive' } },
-          { apellidos: { contains: termino, mode: 'insensitive' } },
+          { nombres: { contains: termino } },
+          { apellidos: { contains: termino } },
         ],
       },
       include: {
@@ -208,6 +208,53 @@ export class PrismaPersonaRepository implements PersonaRepository {
         },
       });
     }
+  }
+
+  async buscarConPaginacion(options: {
+    termino?: string;
+    limit: number;
+    offset: number;
+  }): Promise<{ personas: Persona[]; total: number }> {
+    const whereClause: any = {};
+    
+    if (options.termino) {
+      const termino = options.termino.trim();
+      // Si el término es solo números, buscar por documento
+      if (/^\d+$/.test(termino)) {
+        whereClause.documento = { contains: termino };
+      } else {
+        whereClause.OR = [
+          { nombres: { contains: termino } },
+          { apellidos: { contains: termino } },
+        ];
+      }
+    }
+
+    // Obtener total
+    const total = await this.prisma.persona.count({ where: whereClause });
+
+    // Obtener datos con paginación
+    const personasData = await this.prisma.persona.findMany({
+      where: whereClause,
+      include: {
+        telefonos: true,
+        emails: true,
+        referenciasPersonales: true,
+        referenciasLaborales: true,
+      },
+      skip: options.offset,
+      take: options.limit,
+      orderBy: { id: 'desc' },
+    });
+
+    // Convertir a entidades de dominio
+    const personas: Persona[] = [];
+    for (const personaData of personasData) {
+      const persona = await this.buscarPorId(personaData.id);
+      if (persona) personas.push(persona);
+    }
+
+    return { personas, total };
   }
 
   async eliminar(id: number): Promise<void> {

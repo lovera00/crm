@@ -1,7 +1,7 @@
 import { Deuda } from '../../domain/entities/deuda';
 import { Cuota } from '../../domain/entities/cuota';
-import { DeudaRepository } from '../../domain/repositories/deuda-repository';
-import { PrismaClient, Prisma, EstadoCuota as PrismaEstadoCuota } from '../../generated/prisma';
+import { DeudaRepository, BuscarDeudasInput } from '../../domain/repositories/deuda-repository';
+import { PrismaClient, Prisma, EstadoCuota as PrismaEstadoCuota } from '../../generated/client';
 import { EstadoDeuda } from '../../domain/enums/estado-deuda';
 import { EstadoCuota } from '../../domain/enums/estado-cuota';
 
@@ -16,7 +16,7 @@ export class PrismaDeudaRepository implements DeudaRepository {
     if (!deudaData) return null;
 
     // Mapear cuotas
-    const cuotasRecuperadas = deudaData.cuotas.map(cuota => 
+    const cuotasRecuperadas = deudaData.cuotas.map((cuota: any) => 
       Cuota.reconstruir({
         id: cuota.id,
         numeroCuota: cuota.numeroCuota,
@@ -96,7 +96,7 @@ export class PrismaDeudaRepository implements DeudaRepository {
       where: { deudaMaestraId: deudaGuardada.id },
       select: { id: true },
     });
-    const idsExistentes = new Set(cuotasExistentes.map(c => c.id));
+    const idsExistentes = new Set(cuotasExistentes.map((c: any) => c.id));
 
     // 5. Preparar operaciones para cuotas
     const operacionesCuotas = deuda.cuotas.map(cuota => {
@@ -239,5 +239,77 @@ export class PrismaDeudaRepository implements DeudaRepository {
         cuotas: cuotasRecuperadas,
       });
     });
+  }
+
+  async buscarConPaginacion(input: BuscarDeudasInput): Promise<{ deudas: Deuda[]; total: number }> {
+    const { gestorId, estadoId, search, limit, offset } = input;
+    
+    const where: any = {};
+    
+    if (gestorId) {
+      where.gestorAsignadoId = gestorId;
+    }
+    
+    if (estadoId) {
+      where.estadoActualId = estadoId;
+    }
+    
+    if (search) {
+      where.OR = [
+        { acreedor: { contains: search } },
+        { concepto: { contains: search } },
+      ];
+    }
+    
+    const [deudasData, total] = await Promise.all([
+      this.prisma.deudaMaestra.findMany({
+        where,
+        include: { cuotas: true, estadoActual: true, gestorAsignado: true },
+        take: limit,
+        skip: offset,
+        orderBy: { id: 'desc' },
+      }),
+      this.prisma.deudaMaestra.count({ where }),
+    ]);
+    
+    const deudas = deudasData.map(deudaData => {
+      const cuotasRecuperadas = deudaData.cuotas.map(cuota => 
+        Cuota.reconstruir({
+          id: cuota.id,
+          numeroCuota: cuota.numeroCuota,
+          fechaVencimiento: cuota.fechaVencimiento,
+          capitalOriginal: cuota.capitalOriginal,
+          saldoCapital: cuota.saldoCapital,
+          interesMoratorioAcumulado: cuota.interesMoratorioAcumulado,
+          interesPunitorioAcumulado: cuota.interesPunitorioAcumulado,
+          estadoCuota: cuota.estadoCuota as unknown as EstadoCuota,
+          fechaUltimoPago: cuota.fechaUltimoPago,
+          montoCuota: cuota.montoCuota,
+        })
+      );
+      return Deuda.reconstruir({
+        id: deudaData.id,
+        acreedor: deudaData.acreedor,
+        concepto: deudaData.concepto,
+        estadoActual: deudaData.estadoActual.nombre as EstadoDeuda,
+        gestorAsignadoId: deudaData.gestorAsignadoId,
+        diasMora: deudaData.diasMora,
+        diasGestion: deudaData.diasGestion,
+        saldoCapitalTotal: deudaData.saldoCapitalTotal,
+        deudaTotal: deudaData.deudaTotal,
+        gastosCobranza: deudaData.gastosCobranza,
+        interesMoratorio: deudaData.interesMoratorio,
+        interesPunitorio: deudaData.interesPunitorio,
+        fechaUltimoPago: deudaData.fechaUltimoPago,
+        montoCuota: deudaData.montoCuota,
+        fechaAsignacionGestor: deudaData.fechaAsignacionGestor,
+        tasaInteresMoratorio: (deudaData as any).tasaInteresMoratorio,
+        tasaInteresPunitorio: (deudaData as any).tasaInteresPunitorio,
+        fechaExpiracionAcuerdo: (deudaData as any).fechaExpiracionAcuerdo,
+        cuotas: cuotasRecuperadas,
+      });
+    });
+    
+    return { deudas, total };
   }
 }

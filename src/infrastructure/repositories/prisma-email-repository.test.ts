@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PrismaEmailRepository } from './prisma-email-repository';
-import { PrismaClient, EstadoContacto as PrismaEstadoContacto } from '../../generated/prisma';
+import { PrismaClient, EstadoContacto as PrismaEstadoContacto } from '../../generated/client';
 import { Email } from '../../domain/entities/email';
 import { EstadoContacto } from '../../domain/enums/estado-contacto';
 

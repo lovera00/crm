@@ -1,6 +1,6 @@
 import { ReglaTransicion } from '../../domain/entities/regla-transicion';
 import { ReglaTransicionRepository } from '../../domain/repositories/regla-transicion-repository';
-import { PrismaClient } from '../../generated/prisma/client';
+import { PrismaClient } from '../../generated/client';
 import { EstadoDeuda } from '../../domain/enums/estado-deuda';
 
 export class PrismaReglaTransicionRepository implements ReglaTransicionRepository {

@@ -1,0 +1,460 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EstadoVerificacion {
+  SI
+  NO
+  Pendiente
+}
+
+enum EstadoContacto {
+  Pendiente_de_Verificacion
+  Activo
+  Inactivo
+}
+
+enum EstadoCuota {
+  Pendiente
+  Vencida
+  Pagada
+  En_Acuerdo
+}
+
+enum EstadoSolicitud {
+  Pendiente
+  Aprobada
+  Rechazada
+  Expirada
+}
+
+enum PrioridadSolicitud {
+  Baja
+  Media
+  Alta
+  Critica
+}
+
+model Usuario {
+  id                Int      @id @default(autoincrement())
+  username          String   @unique
+  email             String   @unique
+  nombre            String
+  rol               String // 'gestor', 'supervisor', 'administrador'
+  passwordHash      String
+  activo            Boolean  @default(true)
+  fechaCreacion     DateTime @default(now())
+  fechaModificacion DateTime @default(now()) @updatedAt
+
+  // Relaciones
+  personasCreadas                    Persona[]               @relation("PersonaCreadaPor")
+  personasModificadas                Persona[]               @relation("PersonaModificadaPor")
+  deudasCreadas                      DeudaMaestra[]          @relation("DeudaCreadaPor")
+  deudasModificadas                  DeudaMaestra[]          @relation("DeudaModificadaPor")
+  seguimientosCreados                Seguimiento[]           @relation("SeguimientoCreadoPor")
+  seguimientosModificados            Seguimiento[]           @relation("SeguimientoModificadoPor")
+  telefonosCreados                   Telefono[]              @relation("TelefonoCreadoPor")
+  telefonosModificados               Telefono[]              @relation("TelefonoModificadoPor")
+  emailsCreados                      Email[]                 @relation("EmailCreadoPor")
+  emailsModificados                  Email[]                 @relation("EmailModificadoPor")
+  referenciasPersonalesCreadas       ReferenciaPersonal[]    @relation("ReferenciaPersonalCreadaPor")
+  referenciasPersonalesModificadas   ReferenciaPersonal[]    @relation("ReferenciaPersonalModificadaPor")
+  referenciasLaboralesCreadas        ReferenciaLaboral[]     @relation("ReferenciaLaboralCreadaPor")
+  referenciasLaboralesModificadas    ReferenciaLaboral[]     @relation("ReferenciaLaboralModificadaPor")
+  tiposGestionCreados                TipoGestion[]           @relation("TipoGestionCreadoPor")
+  tiposGestionModificados            TipoGestion[]           @relation("TipoGestionModificadoPor")
+  reglasTransicionCreadas            ReglaTransicion[]       @relation("ReglaTransicionCreadaPor")
+  reglasTransicionModificadas        ReglaTransicion[]       @relation("ReglaTransicionModificadaPor")
+  estadosDeudaCreados                EstadoDeuda[]           @relation("EstadoDeudaCreadoPor")
+  estadosDeudaModificados            EstadoDeuda[]           @relation("EstadoDeudaModificadoPor")
+  transicionesEstadoCreadas          TransicionEstado[]      @relation("TransicionEstadoCreadaPor")
+  transicionesEstadoModificadas      TransicionEstado[]      @relation("TransicionEstadoModificadaPor")
+  solicitudesAutorizacionCreadas     SolicitudAutorizacion[] @relation("SolicitudAutorizacionCreadaPor")
+  solicitudesAutorizacionModificadas SolicitudAutorizacion[] @relation("SolicitudAutorizacionModificadaPor")
+  asignacionesCarteraCreadas         AsignacionCartera[]     @relation("AsignacionCarteraCreadaPor")
+  asignacionesCarteraModificadas     AsignacionCartera[]     @relation("AsignacionCarteraModificadaPor")
+  deudasAsignadas                    DeudaMaestra[]          @relation("DeudaAsignadaAGestor")
+  solicitudesAutorizacionSupervisor  SolicitudAutorizacion[] @relation("SolicitudAutorizacionSupervisor")
+  asignacionesCarteraAsignador       AsignacionCartera[]     @relation("AsignacionCarteraAsignador")
+  // Relaciones adicionales
+  cuotasCreadas                      Cuota[]                 @relation("CuotaCreadoPor")
+  cuotasModificadas                  Cuota[]                 @relation("CuotaModificadoPor")
+  personasDeudasCreadas              PersonaDeuda[]          @relation("PersonaDeudaCreadoPor")
+  seguimientosGestor                 Seguimiento[]           @relation("SeguimientoGestor")
+  solicitudesAutorizacionSolicitante SolicitudAutorizacion[] @relation("SolicitudAutorizacionSolicitante")
+  asignacionesCarteraGestor          AsignacionCartera[]     @relation("AsignacionCarteraGestor")
+  // Fin relaciones adicionales
+
+  @@map("usuarios")
+}
+
+model Persona {
+  id                  Int                @id @default(autoincrement())
+  nombres             String
+  apellidos           String
+  documento           String             @unique
+  funcionarioPublico  EstadoVerificacion @default(Pendiente)
+  fechaModFuncionario DateTime?
+  jubilado            EstadoVerificacion @default(Pendiente)
+  fechaModJubilado    DateTime?
+  ipsActivo           EstadoVerificacion @default(Pendiente)
+  fechaModIps         DateTime?
+  datosVarios         Json?
+
+  // Auditoría
+  creadoPorId       Int?
+  creadoPor         Usuario? @relation("PersonaCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario? @relation("PersonaModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime @default(now()) @updatedAt
+
+  // Relaciones
+  telefonos             Telefono[]
+  emails                Email[]
+  referenciasPersonales ReferenciaPersonal[]
+  referenciasLaborales  ReferenciaLaboral[]
+  deudas                PersonaDeuda[]
+  seguimientos          Seguimiento[]        @relation("SeguimientoPersona")
+
+  @@map("personas")
+}
+
+model Telefono {
+  id                Int            @id @default(autoincrement())
+  personaId         Int
+  persona           Persona        @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  numero            String
+  estado            EstadoContacto @default(Pendiente_de_Verificacion)
+  creadoPorId       Int?
+  creadoPor         Usuario?       @relation("TelefonoCreadoPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime       @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario?       @relation("TelefonoModificadoPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime       @default(now()) @updatedAt
+
+  @@map("telefonos")
+}
+
+model Email {
+  id                Int            @id @default(autoincrement())
+  personaId         Int
+  persona           Persona        @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  email             String         @unique
+  estado            EstadoContacto @default(Pendiente_de_Verificacion)
+  creadoPorId       Int?
+  creadoPor         Usuario?       @relation("EmailCreadoPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime       @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario?       @relation("EmailModificadoPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime       @default(now()) @updatedAt
+
+  @@map("emails")
+}
+
+model ReferenciaPersonal {
+  id                Int            @id @default(autoincrement())
+  personaId         Int
+  persona           Persona        @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  nombre            String
+  parentesco        String
+  telefono          String
+  estado            EstadoContacto @default(Pendiente_de_Verificacion)
+  creadoPorId       Int?
+  creadoPor         Usuario?       @relation("ReferenciaPersonalCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime       @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario?       @relation("ReferenciaPersonalModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime       @default(now()) @updatedAt
+
+  @@map("referencias_personales")
+}
+
+model ReferenciaLaboral {
+  id                Int            @id @default(autoincrement())
+  personaId         Int
+  persona           Persona        @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  nombre            String
+  empresa           String?
+  telefono          String
+  estado            EstadoContacto @default(Pendiente_de_Verificacion)
+  creadoPorId       Int?
+  creadoPor         Usuario?       @relation("ReferenciaLaboralCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime       @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario?       @relation("ReferenciaLaboralModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime       @default(now()) @updatedAt
+
+  @@map("referencias_laborales")
+}
+
+model EstadoDeuda {
+  id                   Int      @id @default(autoincrement())
+  nombre               String   @unique
+  descripcion          String?
+  esEstadoFinal        Boolean  @default(false)
+  requiereAutorizacion Boolean  @default(false)
+  orden                Int      @default(0)
+  creadoPorId          Int?
+  creadoPor            Usuario? @relation("EstadoDeudaCreadoPor", fields: [creadoPorId], references: [id])
+  fechaCreacion        DateTime @default(now())
+  modificadoPorId      Int?
+  modificadoPor        Usuario? @relation("EstadoDeudaModificadoPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion    DateTime @default(now()) @updatedAt
+
+  // Relaciones
+  deudas                         DeudaMaestra[]
+  transicionesOrigen             TransicionEstado[]      @relation("TransicionEstadoOrigen")
+  transicionesDestino            TransicionEstado[]      @relation("TransicionEstadoDestino")
+  reglasTransicionOrigen         ReglaTransicion[]       @relation("ReglaTransicionOrigen")
+  reglasTransicionDestino        ReglaTransicion[]       @relation("ReglaTransicionDestino")
+  solicitudesAutorizacionOrigen  SolicitudAutorizacion[] @relation("SolicitudAutorizacionOrigen")
+  solicitudesAutorizacionDestino SolicitudAutorizacion[] @relation("SolicitudAutorizacionDestino")
+
+  @@map("estados_deuda")
+}
+
+model DeudaMaestra {
+  id                     Int         @id @default(autoincrement())
+  acreedor               String
+  concepto               String
+  saldoCapitalTotal      Float       @default(0)
+  deudaTotal             Float       @default(0)
+  estadoActualId         Int
+  estadoActual           EstadoDeuda @relation(fields: [estadoActualId], references: [id])
+  gestorAsignadoId       Int?
+  gestorAsignado         Usuario?    @relation("DeudaAsignadaAGestor", fields: [gestorAsignadoId], references: [id])
+  diasMora               Int         @default(0)
+  diasGestion            Int         @default(0)
+  gastosCobranza         Float       @default(0)
+  interesMoratorio       Float       @default(0)
+  interesPunitorio       Float       @default(0)
+  fechaUltimoPago        DateTime?
+  montoCuota             Float?
+  fechaAsignacionGestor  DateTime?
+  tasaInteresMoratorio   Float?
+  tasaInteresPunitorio   Float?
+  fechaExpiracionAcuerdo DateTime?
+
+  // Auditoría
+  creadoPorId       Int?
+  creadoPor         Usuario? @relation("DeudaCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario? @relation("DeudaModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime @default(now()) @updatedAt
+
+  // Relaciones
+  cuotas                  Cuota[]
+  personas                PersonaDeuda[]
+  seguimientos            SeguimientoDeuda[]
+  solicitudesAutorizacion SolicitudAutorizacion[]
+  asignacionesCartera     AsignacionCartera[]
+
+  @@map("deudas_maestras")
+}
+
+model Cuota {
+  id                        Int          @id @default(autoincrement())
+  deudaMaestraId            Int
+  deudaMaestra              DeudaMaestra @relation(fields: [deudaMaestraId], references: [id], onDelete: Cascade)
+  numeroCuota               Int
+  fechaVencimiento          DateTime
+  capitalOriginal           Float
+  saldoCapital              Float
+  interesMoratorioAcumulado Float        @default(0)
+  interesPunitorioAcumulado Float        @default(0)
+  estadoCuota               EstadoCuota  @default(Pendiente)
+  fechaUltimoPago           DateTime?
+  montoCuota                Float?
+
+  // Auditoría
+  creadoPorId       Int?
+  creadoPor         Usuario? @relation("CuotaCreadoPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario? @relation("CuotaModificadoPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime @default(now()) @updatedAt
+
+  @@map("cuotas")
+}
+
+model PersonaDeuda {
+  id                Int          @id @default(autoincrement())
+  personaId         Int
+  persona           Persona      @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  deudaMaestraId    Int
+  deudaMaestra      DeudaMaestra @relation(fields: [deudaMaestraId], references: [id], onDelete: Cascade)
+  esDeudorPrincipal Boolean      @default(true)
+
+  // Auditoría
+  creadoPorId   Int?
+  creadoPor     Usuario? @relation("PersonaDeudaCreadoPor", fields: [creadoPorId], references: [id])
+  fechaCreacion DateTime @default(now())
+
+  @@unique([personaId, deudaMaestraId])
+  @@map("personas_deudas")
+}
+
+model TipoGestion {
+  id                Int      @id @default(autoincrement())
+  nombre            String   @unique
+  descripcion       String?
+  activo            Boolean  @default(true)
+  orden             Int      @default(0)
+  color             String?
+  icono             String?
+  creadoPorId       Int?
+  creadoPor         Usuario? @relation("TipoGestionCreadoPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario? @relation("TipoGestionModificadoPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime @default(now()) @updatedAt
+
+  // Relaciones
+  seguimientos     Seguimiento[]
+  reglasTransicion ReglaTransicion[]
+
+  @@map("tipos_gestion")
+}
+
+model Seguimiento {
+  id                      Int         @id @default(autoincrement())
+  gestorId                Int
+  gestor                  Usuario     @relation("SeguimientoGestor", fields: [gestorId], references: [id])
+  personaId               Int
+  persona                 Persona     @relation("SeguimientoPersona", fields: [personaId], references: [id])
+  tipoGestionId           Int
+  tipoGestion             TipoGestion @relation(fields: [tipoGestionId], references: [id])
+  fechaHora               DateTime    @default(now())
+  observacion             String?
+  requiereSeguimiento     Boolean     @default(false)
+  fechaProximoSeguimiento DateTime?
+
+  // Auditoría
+  creadoPorId       Int?
+  creadoPor         Usuario? @relation("SeguimientoCreadoPor", fields: [creadoPorId], references: [id])
+  fechaCreacion     DateTime @default(now())
+  modificadoPorId   Int?
+  modificadoPor     Usuario? @relation("SeguimientoModificadoPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion DateTime @default(now()) @updatedAt
+
+  // Relaciones
+  deudas                  SeguimientoDeuda[]
+  solicitudesAutorizacion SolicitudAutorizacion[]
+
+  @@map("seguimientos")
+}
+
+model SeguimientoDeuda {
+  id             Int          @id @default(autoincrement())
+  seguimientoId  Int
+  seguimiento    Seguimiento  @relation(fields: [seguimientoId], references: [id], onDelete: Cascade)
+  deudaMaestraId Int
+  deudaMaestra   DeudaMaestra @relation(fields: [deudaMaestraId], references: [id], onDelete: Cascade)
+
+  @@unique([seguimientoId, deudaMaestraId])
+  @@map("seguimientos_deudas")
+}
+
+model ReglaTransicion {
+  id                   Int          @id @default(autoincrement())
+  tipoGestionId        Int
+  tipoGestion          TipoGestion  @relation(fields: [tipoGestionId], references: [id])
+  estadoOrigenId       Int?
+  estadoOrigen         EstadoDeuda? @relation("ReglaTransicionOrigen", fields: [estadoOrigenId], references: [id])
+  estadoDestinoId      Int?
+  estadoDestino        EstadoDeuda? @relation("ReglaTransicionDestino", fields: [estadoDestinoId], references: [id])
+  requiereAutorizacion Boolean      @default(false)
+  mensajeUi            String?
+  validacionAdicional  Json?
+  prioridad            Int          @default(0)
+  activo               Boolean      @default(true)
+  creadoPorId          Int?
+  creadoPor            Usuario?     @relation("ReglaTransicionCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion        DateTime     @default(now())
+  modificadoPorId      Int?
+  modificadoPor        Usuario?     @relation("ReglaTransicionModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion    DateTime     @default(now()) @updatedAt
+
+  @@map("reglas_transicion")
+}
+
+model TransicionEstado {
+  id                   Int         @id @default(autoincrement())
+  estadoOrigenId       Int
+  estadoOrigen         EstadoDeuda @relation("TransicionEstadoOrigen", fields: [estadoOrigenId], references: [id])
+  estadoDestinoId      Int
+  estadoDestino        EstadoDeuda @relation("TransicionEstadoDestino", fields: [estadoDestinoId], references: [id])
+  requiereAutorizacion Boolean     @default(false)
+  descripcion          String?
+  activo               Boolean     @default(true)
+  creadoPorId          Int?
+  creadoPor            Usuario?    @relation("TransicionEstadoCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion        DateTime    @default(now())
+  modificadoPorId      Int?
+  modificadoPor        Usuario?    @relation("TransicionEstadoModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion    DateTime    @default(now()) @updatedAt
+
+  @@map("transiciones_estado")
+}
+
+model SolicitudAutorizacion {
+  id                    Int                @id @default(autoincrement())
+  seguimientoId         Int
+  seguimiento           Seguimiento        @relation(fields: [seguimientoId], references: [id])
+  deudaMaestraId        Int
+  deudaMaestra          DeudaMaestra       @relation(fields: [deudaMaestraId], references: [id])
+  estadoOrigenId        Int
+  estadoOrigen          EstadoDeuda        @relation("SolicitudAutorizacionOrigen", fields: [estadoOrigenId], references: [id])
+  estadoDestinoId       Int
+  estadoDestino         EstadoDeuda        @relation("SolicitudAutorizacionDestino", fields: [estadoDestinoId], references: [id])
+  gestorSolicitanteId   Int
+  gestorSolicitante     Usuario            @relation("SolicitudAutorizacionSolicitante", fields: [gestorSolicitanteId], references: [id])
+  supervisorAsignadoId  Int?
+  supervisorAsignado    Usuario?           @relation("SolicitudAutorizacionSupervisor", fields: [supervisorAsignadoId], references: [id])
+  estadoSolicitud       EstadoSolicitud    @default(Pendiente)
+  fechaSolicitud        DateTime           @default(now())
+  fechaResolucion       DateTime?
+  comentarioSolicitante String?
+  comentarioSupervisor  String?
+  prioridad             PrioridadSolicitud @default(Media)
+  creadoPorId           Int?
+  creadoPor             Usuario?           @relation("SolicitudAutorizacionCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion         DateTime           @default(now())
+  modificadoPorId       Int?
+  modificadoPor         Usuario?           @relation("SolicitudAutorizacionModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion     DateTime           @default(now()) @updatedAt
+
+  @@map("solicitudes_autorizacion")
+}
+
+model AsignacionCartera {
+  id                    Int          @id @default(autoincrement())
+  deudaMaestraId        Int
+  deudaMaestra          DeudaMaestra @relation(fields: [deudaMaestraId], references: [id])
+  gestorId              Int
+  gestor                Usuario      @relation("AsignacionCarteraGestor", fields: [gestorId], references: [id])
+  supervisorAsignadorId Int?
+  supervisorAsignador   Usuario?     @relation("AsignacionCarteraAsignador", fields: [supervisorAsignadorId], references: [id])
+  fechaAsignacion       DateTime     @default(now())
+  fechaReasignacion     DateTime?
+  motivoReasignacion    String?
+  activo                Boolean      @default(true)
+  creadoPorId           Int?
+  creadoPor             Usuario?     @relation("AsignacionCarteraCreadaPor", fields: [creadoPorId], references: [id])
+  fechaCreacion         DateTime     @default(now())
+  modificadoPorId       Int?
+  modificadoPor         Usuario?     @relation("AsignacionCarteraModificadaPor", fields: [modificadoPorId], references: [id])
+  fechaModificacion     DateTime     @default(now()) @updatedAt
+
+  @@map("asignaciones_cartera")
+}

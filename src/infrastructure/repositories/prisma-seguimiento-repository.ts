@@ -1,6 +1,6 @@
 import { Seguimiento } from '../../domain/entities/seguimiento';
 import { SeguimientoRepository } from '../../domain/repositories/seguimiento-repository';
-import { PrismaClient } from '../../generated/prisma/client';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaSeguimientoRepository implements SeguimientoRepository {
   constructor(private prisma: PrismaClient) {}

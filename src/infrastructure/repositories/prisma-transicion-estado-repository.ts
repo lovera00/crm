@@ -1,6 +1,6 @@
 import { TransicionEstadoRepository, TransicionEstado } from '../../domain/repositories/transicion-estado-repository';
 import { EstadoDeuda } from '../../domain/enums/estado-deuda';
-import { PrismaClient } from '../../generated/prisma/client';
+import { PrismaClient } from '../../generated/client';
 
 export class PrismaTransicionEstadoRepository implements TransicionEstadoRepository {
   constructor(private prisma: PrismaClient) {}

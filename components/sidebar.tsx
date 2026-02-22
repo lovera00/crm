@@ -19,21 +19,21 @@ const navigation = {
     { name: "Autorizaciones", href: "/dashboard/autorizaciones", icon: CheckSquare },
   ],
   supervisor: [
-    { name: "Dashboard", href: "/dashboard", icon: Home },
+    { name: "Dashboard", href: "/dashboard/supervisor", icon: Home },
     { name: "Personas", href: "/dashboard/personas", icon: Users },
     { name: "Seguimientos", href: "/dashboard/seguimientos", icon: FileText },
     { name: "Autorizaciones", href: "/dashboard/autorizaciones", icon: CheckSquare },
     { name: "Carteras", href: "/dashboard/carteras", icon: BarChart },
   ],
   administrador: [
-    { name: "Dashboard", href: "/dashboard", icon: Home },
+    { name: "Dashboard", href: "/dashboard/supervisor", icon: Home },
     { name: "Personas", href: "/dashboard/personas", icon: Users },
     { name: "Seguimientos", href: "/dashboard/seguimientos", icon: FileText },
     { name: "Autorizaciones", href: "/dashboard/autorizaciones", icon: CheckSquare },
     { name: "Carteras", href: "/dashboard/carteras", icon: BarChart },
     { name: "Usuarios", href: "/dashboard/usuarios", icon: UserCheck },
-    { name: "Configuración", href: "/dashboard/configuracion", icon: Settings },
-    { name: "Administración", href: "/dashboard/admin", icon: Shield },
+    { name: "Tipos de Gestión", href: "/dashboard/configuracion/tipos-gestion", icon: Settings },
+    { name: "Reglas de Transición", href: "/dashboard/configuracion/reglas", icon: Settings },
   ],
 };
 

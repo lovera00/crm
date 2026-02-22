@@ -52,9 +52,11 @@ El sistema está compuesto por los siguientes módulos:
 
 | Componente | Tecnología |
 |------------|------------|
+| Framework | Next.js (latest) |
+| Base de datos | PostgreSQL |
+| ORM | Prisma |
+| UI Components | shadcn/ui |
 | Backend | API con lógica de máquina de estados dinámica |
-| Base de datos | Relacional con soporte para transacciones complejas |
-| Frontend | Interfaz web responsiva |
 | Servicios | Sistema de tareas programadas (cron jobs) |
 | Seguridad | Autenticación y autorización por roles |
 

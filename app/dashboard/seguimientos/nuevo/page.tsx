@@ -42,6 +42,16 @@ interface TipoGestion {
   requiereAuth?: boolean;
 }
 
+interface ReglaTransicion {
+  id: number;
+  estadoOrigenId?: number;
+  estadoOrigenNombre?: string;
+  estadoDestinoId?: number;
+  estadoDestinoNombre?: string;
+  requiereAutorizacion: boolean;
+  mensajeUi?: string;
+}
+
 export default function NuevoSeguimientoPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -52,6 +62,7 @@ export default function NuevoSeguimientoPage() {
   const [persona, setPersona] = useState<Persona | null>(null);
   const [deudas, setDeudas] = useState<Deuda[]>([]);
   const [tiposGestion, setTiposGestion] = useState<TipoGestion[]>([]);
+  const [reglas, setReglas] = useState<ReglaTransicion[]>([]);
   const [selectedDeudas, setSelectedDeudas] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -101,6 +112,38 @@ export default function NuevoSeguimientoPage() {
       setLoading(false);
     }
   }, [formData.personaId]);
+
+  useEffect(() => {
+    const fetchReglas = async () => {
+      if (!formData.tipoGestionId || selectedDeudas.length === 0) {
+        setReglas([]);
+        return;
+      }
+
+      const tipoId = parseInt(formData.tipoGestionId, 10);
+      const primeraDeuda = deudas.find(d => selectedDeudas.includes(d.id));
+      
+      if (!primeraDeuda) {
+        setReglas([]);
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/config/reglas?tipo_gestion_id=${tipoId}&activo=true`);
+        if (res.ok) {
+          const data = await res.json();
+          const reglasAplicables = data.reglas.filter((r: ReglaTransicion) => 
+            r.estadoOrigenId === null || r.estadoOrigenId === primeraDeuda.estadoActual.id
+          );
+          setReglas(reglasAplicables);
+        }
+      } catch (err) {
+        console.error("Error fetching reglas:", err);
+      }
+    };
+
+    fetchReglas();
+  }, [formData.tipoGestionId, selectedDeudas]);
 
   const handleDeudaToggle = (deudaId: number) => {
     setSelectedDeudas((prev) =>
@@ -282,6 +325,27 @@ export default function NuevoSeguimientoPage() {
               </Select>
               {selectedTipo?.descripcion && (
                 <p className="mt-2 text-sm text-gray-500">{selectedTipo.descripcion}</p>
+              )}
+              
+              {reglas.length > 0 && selectedDeudas.length > 0 && (
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm font-medium text-blue-800">Cambio de estado:</p>
+                  {reglas.map((regla) => (
+                    <div key={regla.id} className="mt-2 text-sm">
+                      <span className="text-gray-600">
+                        {regla.estadoOrigenNombre || 'Cualquiera'} → {regla.estadoDestinoNombre || 'El mismo'}
+                      </span>
+                      {regla.requiereAutorizacion && (
+                        <Badge variant="outline" className="ml-2 text-xs bg-yellow-50">
+                          Requiere autorización
+                        </Badge>
+                      )}
+                      {regla.mensajeUi && (
+                        <p className="text-xs text-gray-500 mt-1">{regla.mensajeUi}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
               )}
             </CardContent>
           </Card>

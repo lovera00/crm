@@ -6615,6 +6615,7 @@ export namespace Prisma {
     id: number | null
     personaId: number | null
     numero: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -6626,6 +6627,7 @@ export namespace Prisma {
     id: number | null
     personaId: number | null
     numero: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -6637,6 +6639,7 @@ export namespace Prisma {
     id: number
     personaId: number
     numero: number
+    observacion: number
     estado: number
     creadoPorId: number
     fechaCreacion: number
@@ -6664,6 +6667,7 @@ export namespace Prisma {
     id?: true
     personaId?: true
     numero?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -6675,6 +6679,7 @@ export namespace Prisma {
     id?: true
     personaId?: true
     numero?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -6686,6 +6691,7 @@ export namespace Prisma {
     id?: true
     personaId?: true
     numero?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -6784,6 +6790,7 @@ export namespace Prisma {
     id: number
     personaId: number
     numero: string
+    observacion: string | null
     estado: $Enums.EstadoContacto
     creadoPorId: number | null
     fechaCreacion: Date
@@ -6814,6 +6821,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     numero?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -6828,6 +6836,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     numero?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -6842,6 +6851,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     numero?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -6856,6 +6866,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     numero?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -6863,7 +6874,7 @@ export namespace Prisma {
     fechaModificacion?: boolean
   }
 
-  export type TelefonoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "numero" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["telefono"]>
+  export type TelefonoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "numero" | "observacion" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["telefono"]>
   export type TelefonoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     persona?: boolean | PersonaDefaultArgs<ExtArgs>
     creadoPor?: boolean | Telefono$creadoPorArgs<ExtArgs>
@@ -6891,6 +6902,7 @@ export namespace Prisma {
       id: number
       personaId: number
       numero: string
+      observacion: string | null
       estado: $Enums.EstadoContacto
       creadoPorId: number | null
       fechaCreacion: Date
@@ -7325,6 +7337,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Telefono", 'Int'>
     readonly personaId: FieldRef<"Telefono", 'Int'>
     readonly numero: FieldRef<"Telefono", 'String'>
+    readonly observacion: FieldRef<"Telefono", 'String'>
     readonly estado: FieldRef<"Telefono", 'EstadoContacto'>
     readonly creadoPorId: FieldRef<"Telefono", 'Int'>
     readonly fechaCreacion: FieldRef<"Telefono", 'DateTime'>
@@ -7812,6 +7825,7 @@ export namespace Prisma {
     id: number | null
     personaId: number | null
     email: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -7823,6 +7837,7 @@ export namespace Prisma {
     id: number | null
     personaId: number | null
     email: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -7834,6 +7849,7 @@ export namespace Prisma {
     id: number
     personaId: number
     email: number
+    observacion: number
     estado: number
     creadoPorId: number
     fechaCreacion: number
@@ -7861,6 +7877,7 @@ export namespace Prisma {
     id?: true
     personaId?: true
     email?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -7872,6 +7889,7 @@ export namespace Prisma {
     id?: true
     personaId?: true
     email?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -7883,6 +7901,7 @@ export namespace Prisma {
     id?: true
     personaId?: true
     email?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -7981,6 +8000,7 @@ export namespace Prisma {
     id: number
     personaId: number
     email: string
+    observacion: string | null
     estado: $Enums.EstadoContacto
     creadoPorId: number | null
     fechaCreacion: Date
@@ -8011,6 +8031,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     email?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -8025,6 +8046,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     email?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -8039,6 +8061,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     email?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -8053,6 +8076,7 @@ export namespace Prisma {
     id?: boolean
     personaId?: boolean
     email?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -8060,7 +8084,7 @@ export namespace Prisma {
     fechaModificacion?: boolean
   }
 
-  export type EmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "email" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["email"]>
+  export type EmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "email" | "observacion" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["email"]>
   export type EmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     persona?: boolean | PersonaDefaultArgs<ExtArgs>
     creadoPor?: boolean | Email$creadoPorArgs<ExtArgs>
@@ -8088,6 +8112,7 @@ export namespace Prisma {
       id: number
       personaId: number
       email: string
+      observacion: string | null
       estado: $Enums.EstadoContacto
       creadoPorId: number | null
       fechaCreacion: Date
@@ -8522,6 +8547,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Email", 'Int'>
     readonly personaId: FieldRef<"Email", 'Int'>
     readonly email: FieldRef<"Email", 'String'>
+    readonly observacion: FieldRef<"Email", 'String'>
     readonly estado: FieldRef<"Email", 'EstadoContacto'>
     readonly creadoPorId: FieldRef<"Email", 'Int'>
     readonly fechaCreacion: FieldRef<"Email", 'DateTime'>
@@ -9011,6 +9037,7 @@ export namespace Prisma {
     nombre: string | null
     parentesco: string | null
     telefono: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -9024,6 +9051,7 @@ export namespace Prisma {
     nombre: string | null
     parentesco: string | null
     telefono: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -9037,6 +9065,7 @@ export namespace Prisma {
     nombre: number
     parentesco: number
     telefono: number
+    observacion: number
     estado: number
     creadoPorId: number
     fechaCreacion: number
@@ -9066,6 +9095,7 @@ export namespace Prisma {
     nombre?: true
     parentesco?: true
     telefono?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -9079,6 +9109,7 @@ export namespace Prisma {
     nombre?: true
     parentesco?: true
     telefono?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -9092,6 +9123,7 @@ export namespace Prisma {
     nombre?: true
     parentesco?: true
     telefono?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -9192,6 +9224,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion: string | null
     estado: $Enums.EstadoContacto
     creadoPorId: number | null
     fechaCreacion: Date
@@ -9224,6 +9257,7 @@ export namespace Prisma {
     nombre?: boolean
     parentesco?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -9240,6 +9274,7 @@ export namespace Prisma {
     nombre?: boolean
     parentesco?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -9256,6 +9291,7 @@ export namespace Prisma {
     nombre?: boolean
     parentesco?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -9272,6 +9308,7 @@ export namespace Prisma {
     nombre?: boolean
     parentesco?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -9279,7 +9316,7 @@ export namespace Prisma {
     fechaModificacion?: boolean
   }
 
-  export type ReferenciaPersonalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "nombre" | "parentesco" | "telefono" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["referenciaPersonal"]>
+  export type ReferenciaPersonalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "nombre" | "parentesco" | "telefono" | "observacion" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["referenciaPersonal"]>
   export type ReferenciaPersonalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     persona?: boolean | PersonaDefaultArgs<ExtArgs>
     creadoPor?: boolean | ReferenciaPersonal$creadoPorArgs<ExtArgs>
@@ -9309,6 +9346,7 @@ export namespace Prisma {
       nombre: string
       parentesco: string
       telefono: string
+      observacion: string | null
       estado: $Enums.EstadoContacto
       creadoPorId: number | null
       fechaCreacion: Date
@@ -9745,6 +9783,7 @@ export namespace Prisma {
     readonly nombre: FieldRef<"ReferenciaPersonal", 'String'>
     readonly parentesco: FieldRef<"ReferenciaPersonal", 'String'>
     readonly telefono: FieldRef<"ReferenciaPersonal", 'String'>
+    readonly observacion: FieldRef<"ReferenciaPersonal", 'String'>
     readonly estado: FieldRef<"ReferenciaPersonal", 'EstadoContacto'>
     readonly creadoPorId: FieldRef<"ReferenciaPersonal", 'Int'>
     readonly fechaCreacion: FieldRef<"ReferenciaPersonal", 'DateTime'>
@@ -10234,6 +10273,7 @@ export namespace Prisma {
     nombre: string | null
     empresa: string | null
     telefono: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -10247,6 +10287,7 @@ export namespace Prisma {
     nombre: string | null
     empresa: string | null
     telefono: string | null
+    observacion: string | null
     estado: $Enums.EstadoContacto | null
     creadoPorId: number | null
     fechaCreacion: Date | null
@@ -10260,6 +10301,7 @@ export namespace Prisma {
     nombre: number
     empresa: number
     telefono: number
+    observacion: number
     estado: number
     creadoPorId: number
     fechaCreacion: number
@@ -10289,6 +10331,7 @@ export namespace Prisma {
     nombre?: true
     empresa?: true
     telefono?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -10302,6 +10345,7 @@ export namespace Prisma {
     nombre?: true
     empresa?: true
     telefono?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -10315,6 +10359,7 @@ export namespace Prisma {
     nombre?: true
     empresa?: true
     telefono?: true
+    observacion?: true
     estado?: true
     creadoPorId?: true
     fechaCreacion?: true
@@ -10415,6 +10460,7 @@ export namespace Prisma {
     nombre: string
     empresa: string | null
     telefono: string
+    observacion: string | null
     estado: $Enums.EstadoContacto
     creadoPorId: number | null
     fechaCreacion: Date
@@ -10447,6 +10493,7 @@ export namespace Prisma {
     nombre?: boolean
     empresa?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -10463,6 +10510,7 @@ export namespace Prisma {
     nombre?: boolean
     empresa?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -10479,6 +10527,7 @@ export namespace Prisma {
     nombre?: boolean
     empresa?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -10495,6 +10544,7 @@ export namespace Prisma {
     nombre?: boolean
     empresa?: boolean
     telefono?: boolean
+    observacion?: boolean
     estado?: boolean
     creadoPorId?: boolean
     fechaCreacion?: boolean
@@ -10502,7 +10552,7 @@ export namespace Prisma {
     fechaModificacion?: boolean
   }
 
-  export type ReferenciaLaboralOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "nombre" | "empresa" | "telefono" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["referenciaLaboral"]>
+  export type ReferenciaLaboralOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "personaId" | "nombre" | "empresa" | "telefono" | "observacion" | "estado" | "creadoPorId" | "fechaCreacion" | "modificadoPorId" | "fechaModificacion", ExtArgs["result"]["referenciaLaboral"]>
   export type ReferenciaLaboralInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     persona?: boolean | PersonaDefaultArgs<ExtArgs>
     creadoPor?: boolean | ReferenciaLaboral$creadoPorArgs<ExtArgs>
@@ -10532,6 +10582,7 @@ export namespace Prisma {
       nombre: string
       empresa: string | null
       telefono: string
+      observacion: string | null
       estado: $Enums.EstadoContacto
       creadoPorId: number | null
       fechaCreacion: Date
@@ -10968,6 +11019,7 @@ export namespace Prisma {
     readonly nombre: FieldRef<"ReferenciaLaboral", 'String'>
     readonly empresa: FieldRef<"ReferenciaLaboral", 'String'>
     readonly telefono: FieldRef<"ReferenciaLaboral", 'String'>
+    readonly observacion: FieldRef<"ReferenciaLaboral", 'String'>
     readonly estado: FieldRef<"ReferenciaLaboral", 'EstadoContacto'>
     readonly creadoPorId: FieldRef<"ReferenciaLaboral", 'Int'>
     readonly fechaCreacion: FieldRef<"ReferenciaLaboral", 'DateTime'>
@@ -25891,6 +25943,7 @@ export namespace Prisma {
     id: 'id',
     personaId: 'personaId',
     numero: 'numero',
+    observacion: 'observacion',
     estado: 'estado',
     creadoPorId: 'creadoPorId',
     fechaCreacion: 'fechaCreacion',
@@ -25905,6 +25958,7 @@ export namespace Prisma {
     id: 'id',
     personaId: 'personaId',
     email: 'email',
+    observacion: 'observacion',
     estado: 'estado',
     creadoPorId: 'creadoPorId',
     fechaCreacion: 'fechaCreacion',
@@ -25921,6 +25975,7 @@ export namespace Prisma {
     nombre: 'nombre',
     parentesco: 'parentesco',
     telefono: 'telefono',
+    observacion: 'observacion',
     estado: 'estado',
     creadoPorId: 'creadoPorId',
     fechaCreacion: 'fechaCreacion',
@@ -25937,6 +25992,7 @@ export namespace Prisma {
     nombre: 'nombre',
     empresa: 'empresa',
     telefono: 'telefono',
+    observacion: 'observacion',
     estado: 'estado',
     creadoPorId: 'creadoPorId',
     fechaCreacion: 'fechaCreacion',
@@ -26654,6 +26710,7 @@ export namespace Prisma {
     id?: IntFilter<"Telefono"> | number
     personaId?: IntFilter<"Telefono"> | number
     numero?: StringFilter<"Telefono"> | string
+    observacion?: StringNullableFilter<"Telefono"> | string | null
     estado?: EnumEstadoContactoFilter<"Telefono"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"Telefono"> | number | null
     fechaCreacion?: DateTimeFilter<"Telefono"> | Date | string
@@ -26668,6 +26725,7 @@ export namespace Prisma {
     id?: SortOrder
     personaId?: SortOrder
     numero?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26685,6 +26743,7 @@ export namespace Prisma {
     NOT?: TelefonoWhereInput | TelefonoWhereInput[]
     personaId?: IntFilter<"Telefono"> | number
     numero?: StringFilter<"Telefono"> | string
+    observacion?: StringNullableFilter<"Telefono"> | string | null
     estado?: EnumEstadoContactoFilter<"Telefono"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"Telefono"> | number | null
     fechaCreacion?: DateTimeFilter<"Telefono"> | Date | string
@@ -26699,6 +26758,7 @@ export namespace Prisma {
     id?: SortOrder
     personaId?: SortOrder
     numero?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26718,6 +26778,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Telefono"> | number
     personaId?: IntWithAggregatesFilter<"Telefono"> | number
     numero?: StringWithAggregatesFilter<"Telefono"> | string
+    observacion?: StringNullableWithAggregatesFilter<"Telefono"> | string | null
     estado?: EnumEstadoContactoWithAggregatesFilter<"Telefono"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableWithAggregatesFilter<"Telefono"> | number | null
     fechaCreacion?: DateTimeWithAggregatesFilter<"Telefono"> | Date | string
@@ -26732,6 +26793,7 @@ export namespace Prisma {
     id?: IntFilter<"Email"> | number
     personaId?: IntFilter<"Email"> | number
     email?: StringFilter<"Email"> | string
+    observacion?: StringNullableFilter<"Email"> | string | null
     estado?: EnumEstadoContactoFilter<"Email"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"Email"> | number | null
     fechaCreacion?: DateTimeFilter<"Email"> | Date | string
@@ -26746,6 +26808,7 @@ export namespace Prisma {
     id?: SortOrder
     personaId?: SortOrder
     email?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26763,6 +26826,7 @@ export namespace Prisma {
     OR?: EmailWhereInput[]
     NOT?: EmailWhereInput | EmailWhereInput[]
     personaId?: IntFilter<"Email"> | number
+    observacion?: StringNullableFilter<"Email"> | string | null
     estado?: EnumEstadoContactoFilter<"Email"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"Email"> | number | null
     fechaCreacion?: DateTimeFilter<"Email"> | Date | string
@@ -26777,6 +26841,7 @@ export namespace Prisma {
     id?: SortOrder
     personaId?: SortOrder
     email?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26796,6 +26861,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Email"> | number
     personaId?: IntWithAggregatesFilter<"Email"> | number
     email?: StringWithAggregatesFilter<"Email"> | string
+    observacion?: StringNullableWithAggregatesFilter<"Email"> | string | null
     estado?: EnumEstadoContactoWithAggregatesFilter<"Email"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableWithAggregatesFilter<"Email"> | number | null
     fechaCreacion?: DateTimeWithAggregatesFilter<"Email"> | Date | string
@@ -26812,6 +26878,7 @@ export namespace Prisma {
     nombre?: StringFilter<"ReferenciaPersonal"> | string
     parentesco?: StringFilter<"ReferenciaPersonal"> | string
     telefono?: StringFilter<"ReferenciaPersonal"> | string
+    observacion?: StringNullableFilter<"ReferenciaPersonal"> | string | null
     estado?: EnumEstadoContactoFilter<"ReferenciaPersonal"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"ReferenciaPersonal"> | number | null
     fechaCreacion?: DateTimeFilter<"ReferenciaPersonal"> | Date | string
@@ -26828,6 +26895,7 @@ export namespace Prisma {
     nombre?: SortOrder
     parentesco?: SortOrder
     telefono?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26847,6 +26915,7 @@ export namespace Prisma {
     nombre?: StringFilter<"ReferenciaPersonal"> | string
     parentesco?: StringFilter<"ReferenciaPersonal"> | string
     telefono?: StringFilter<"ReferenciaPersonal"> | string
+    observacion?: StringNullableFilter<"ReferenciaPersonal"> | string | null
     estado?: EnumEstadoContactoFilter<"ReferenciaPersonal"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"ReferenciaPersonal"> | number | null
     fechaCreacion?: DateTimeFilter<"ReferenciaPersonal"> | Date | string
@@ -26863,6 +26932,7 @@ export namespace Prisma {
     nombre?: SortOrder
     parentesco?: SortOrder
     telefono?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26884,6 +26954,7 @@ export namespace Prisma {
     nombre?: StringWithAggregatesFilter<"ReferenciaPersonal"> | string
     parentesco?: StringWithAggregatesFilter<"ReferenciaPersonal"> | string
     telefono?: StringWithAggregatesFilter<"ReferenciaPersonal"> | string
+    observacion?: StringNullableWithAggregatesFilter<"ReferenciaPersonal"> | string | null
     estado?: EnumEstadoContactoWithAggregatesFilter<"ReferenciaPersonal"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableWithAggregatesFilter<"ReferenciaPersonal"> | number | null
     fechaCreacion?: DateTimeWithAggregatesFilter<"ReferenciaPersonal"> | Date | string
@@ -26900,6 +26971,7 @@ export namespace Prisma {
     nombre?: StringFilter<"ReferenciaLaboral"> | string
     empresa?: StringNullableFilter<"ReferenciaLaboral"> | string | null
     telefono?: StringFilter<"ReferenciaLaboral"> | string
+    observacion?: StringNullableFilter<"ReferenciaLaboral"> | string | null
     estado?: EnumEstadoContactoFilter<"ReferenciaLaboral"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"ReferenciaLaboral"> | number | null
     fechaCreacion?: DateTimeFilter<"ReferenciaLaboral"> | Date | string
@@ -26916,6 +26988,7 @@ export namespace Prisma {
     nombre?: SortOrder
     empresa?: SortOrderInput | SortOrder
     telefono?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26935,6 +27008,7 @@ export namespace Prisma {
     nombre?: StringFilter<"ReferenciaLaboral"> | string
     empresa?: StringNullableFilter<"ReferenciaLaboral"> | string | null
     telefono?: StringFilter<"ReferenciaLaboral"> | string
+    observacion?: StringNullableFilter<"ReferenciaLaboral"> | string | null
     estado?: EnumEstadoContactoFilter<"ReferenciaLaboral"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"ReferenciaLaboral"> | number | null
     fechaCreacion?: DateTimeFilter<"ReferenciaLaboral"> | Date | string
@@ -26951,6 +27025,7 @@ export namespace Prisma {
     nombre?: SortOrder
     empresa?: SortOrderInput | SortOrder
     telefono?: SortOrder
+    observacion?: SortOrderInput | SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
@@ -26972,6 +27047,7 @@ export namespace Prisma {
     nombre?: StringWithAggregatesFilter<"ReferenciaLaboral"> | string
     empresa?: StringNullableWithAggregatesFilter<"ReferenciaLaboral"> | string | null
     telefono?: StringWithAggregatesFilter<"ReferenciaLaboral"> | string
+    observacion?: StringNullableWithAggregatesFilter<"ReferenciaLaboral"> | string | null
     estado?: EnumEstadoContactoWithAggregatesFilter<"ReferenciaLaboral"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableWithAggregatesFilter<"ReferenciaLaboral"> | number | null
     fechaCreacion?: DateTimeWithAggregatesFilter<"ReferenciaLaboral"> | Date | string
@@ -28500,6 +28576,7 @@ export namespace Prisma {
 
   export type TelefonoCreateInput = {
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -28512,6 +28589,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28521,6 +28599,7 @@ export namespace Prisma {
 
   export type TelefonoUpdateInput = {
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28533,6 +28612,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28544,6 +28624,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28553,6 +28634,7 @@ export namespace Prisma {
 
   export type TelefonoUpdateManyMutationInput = {
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28562,6 +28644,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28571,6 +28654,7 @@ export namespace Prisma {
 
   export type EmailCreateInput = {
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -28583,6 +28667,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28592,6 +28677,7 @@ export namespace Prisma {
 
   export type EmailUpdateInput = {
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28604,6 +28690,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28615,6 +28702,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28624,6 +28712,7 @@ export namespace Prisma {
 
   export type EmailUpdateManyMutationInput = {
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28633,6 +28722,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28644,6 +28734,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -28658,6 +28749,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28669,6 +28761,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28683,6 +28776,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28696,6 +28790,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28707,6 +28802,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28718,6 +28814,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28729,6 +28826,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -28743,6 +28841,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28754,6 +28853,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28768,6 +28868,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28781,6 +28882,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -28792,6 +28894,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28803,6 +28906,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -30431,6 +30535,21 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type EnumEstadoContactoFilter<$PrismaModel = never> = {
     equals?: $Enums.EstadoContacto | EnumEstadoContactoFieldRefInput<$PrismaModel>
     in?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
@@ -30447,6 +30566,7 @@ export namespace Prisma {
     id?: SortOrder
     personaId?: SortOrder
     numero?: SortOrder
+    observacion?: SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrder
     fechaCreacion?: SortOrder
@@ -30465,6 +30585,7 @@ export namespace Prisma {
     id?: SortOrder
     personaId?: SortOrder
     numero?: SortOrder
+    observacion?: SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrder
     fechaCreacion?: SortOrder
@@ -30476,6 +30597,7 @@ export namespace Prisma {
     id?: SortOrder
     personaId?: SortOrder
     numero?: SortOrder
+    observacion?: SortOrder
     estado?: SortOrder
     creadoPorId?: SortOrder
     fechaCreacion?: SortOrder
@@ -30484,184 +30606,6 @@ export namespace Prisma {
   }
 
   export type TelefonoSumOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    creadoPorId?: SortOrder
-    modificadoPorId?: SortOrder
-  }
-
-  export type EnumEstadoContactoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.EstadoContacto | EnumEstadoContactoFieldRefInput<$PrismaModel>
-    in?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
-    not?: NestedEnumEstadoContactoWithAggregatesFilter<$PrismaModel> | $Enums.EstadoContacto
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumEstadoContactoFilter<$PrismaModel>
-    _max?: NestedEnumEstadoContactoFilter<$PrismaModel>
-  }
-
-  export type EmailCountOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    email?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type EmailAvgOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    creadoPorId?: SortOrder
-    modificadoPorId?: SortOrder
-  }
-
-  export type EmailMaxOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    email?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type EmailMinOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    email?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type EmailSumOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    creadoPorId?: SortOrder
-    modificadoPorId?: SortOrder
-  }
-
-  export type ReferenciaPersonalCountOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    nombre?: SortOrder
-    parentesco?: SortOrder
-    telefono?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type ReferenciaPersonalAvgOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    creadoPorId?: SortOrder
-    modificadoPorId?: SortOrder
-  }
-
-  export type ReferenciaPersonalMaxOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    nombre?: SortOrder
-    parentesco?: SortOrder
-    telefono?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type ReferenciaPersonalMinOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    nombre?: SortOrder
-    parentesco?: SortOrder
-    telefono?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type ReferenciaPersonalSumOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    creadoPorId?: SortOrder
-    modificadoPorId?: SortOrder
-  }
-
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type ReferenciaLaboralCountOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    nombre?: SortOrder
-    empresa?: SortOrder
-    telefono?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type ReferenciaLaboralAvgOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    creadoPorId?: SortOrder
-    modificadoPorId?: SortOrder
-  }
-
-  export type ReferenciaLaboralMaxOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    nombre?: SortOrder
-    empresa?: SortOrder
-    telefono?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type ReferenciaLaboralMinOrderByAggregateInput = {
-    id?: SortOrder
-    personaId?: SortOrder
-    nombre?: SortOrder
-    empresa?: SortOrder
-    telefono?: SortOrder
-    estado?: SortOrder
-    creadoPorId?: SortOrder
-    fechaCreacion?: SortOrder
-    modificadoPorId?: SortOrder
-    fechaModificacion?: SortOrder
-  }
-
-  export type ReferenciaLaboralSumOrderByAggregateInput = {
     id?: SortOrder
     personaId?: SortOrder
     creadoPorId?: SortOrder
@@ -30684,6 +30628,178 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumEstadoContactoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoContacto | EnumEstadoContactoFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoContactoWithAggregatesFilter<$PrismaModel> | $Enums.EstadoContacto
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEstadoContactoFilter<$PrismaModel>
+    _max?: NestedEnumEstadoContactoFilter<$PrismaModel>
+  }
+
+  export type EmailCountOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    email?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type EmailAvgOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    creadoPorId?: SortOrder
+    modificadoPorId?: SortOrder
+  }
+
+  export type EmailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    email?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type EmailMinOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    email?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type EmailSumOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    creadoPorId?: SortOrder
+    modificadoPorId?: SortOrder
+  }
+
+  export type ReferenciaPersonalCountOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    nombre?: SortOrder
+    parentesco?: SortOrder
+    telefono?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type ReferenciaPersonalAvgOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    creadoPorId?: SortOrder
+    modificadoPorId?: SortOrder
+  }
+
+  export type ReferenciaPersonalMaxOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    nombre?: SortOrder
+    parentesco?: SortOrder
+    telefono?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type ReferenciaPersonalMinOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    nombre?: SortOrder
+    parentesco?: SortOrder
+    telefono?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type ReferenciaPersonalSumOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    creadoPorId?: SortOrder
+    modificadoPorId?: SortOrder
+  }
+
+  export type ReferenciaLaboralCountOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    nombre?: SortOrder
+    empresa?: SortOrder
+    telefono?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type ReferenciaLaboralAvgOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    creadoPorId?: SortOrder
+    modificadoPorId?: SortOrder
+  }
+
+  export type ReferenciaLaboralMaxOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    nombre?: SortOrder
+    empresa?: SortOrder
+    telefono?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type ReferenciaLaboralMinOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    nombre?: SortOrder
+    empresa?: SortOrder
+    telefono?: SortOrder
+    observacion?: SortOrder
+    estado?: SortOrder
+    creadoPorId?: SortOrder
+    fechaCreacion?: SortOrder
+    modificadoPorId?: SortOrder
+    fechaModificacion?: SortOrder
+  }
+
+  export type ReferenciaLaboralSumOrderByAggregateInput = {
+    id?: SortOrder
+    personaId?: SortOrder
+    creadoPorId?: SortOrder
+    modificadoPorId?: SortOrder
   }
 
   export type EstadoDeudaCountOrderByAggregateInput = {
@@ -33351,6 +33467,10 @@ export namespace Prisma {
     connect?: UsuarioWhereUniqueInput
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type EnumEstadoContactoFieldUpdateOperationsInput = {
     set?: $Enums.EstadoContacto
   }
@@ -33491,10 +33611,6 @@ export namespace Prisma {
     create?: XOR<UsuarioCreateWithoutReferenciasLaboralesModificadasInput, UsuarioUncheckedCreateWithoutReferenciasLaboralesModificadasInput>
     connectOrCreate?: UsuarioCreateOrConnectWithoutReferenciasLaboralesModificadasInput
     connect?: UsuarioWhereUniqueInput
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type PersonaUpdateOneRequiredWithoutReferenciasLaboralesNestedInput = {
@@ -35085,23 +35201,6 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumEstadoContactoFilter<$PrismaModel = never> = {
-    equals?: $Enums.EstadoContacto | EnumEstadoContactoFieldRefInput<$PrismaModel>
-    in?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
-    not?: NestedEnumEstadoContactoFilter<$PrismaModel> | $Enums.EstadoContacto
-  }
-
-  export type NestedEnumEstadoContactoWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.EstadoContacto | EnumEstadoContactoFieldRefInput<$PrismaModel>
-    in?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
-    notIn?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
-    not?: NestedEnumEstadoContactoWithAggregatesFilter<$PrismaModel> | $Enums.EstadoContacto
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumEstadoContactoFilter<$PrismaModel>
-    _max?: NestedEnumEstadoContactoFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -35114,6 +35213,13 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumEstadoContactoFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoContacto | EnumEstadoContactoFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoContactoFilter<$PrismaModel> | $Enums.EstadoContacto
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -35131,6 +35237,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEstadoContactoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoContacto | EnumEstadoContactoFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoContacto[] | ListEnumEstadoContactoFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoContactoWithAggregatesFilter<$PrismaModel> | $Enums.EstadoContacto
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEstadoContactoFilter<$PrismaModel>
+    _max?: NestedEnumEstadoContactoFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -35544,6 +35660,7 @@ export namespace Prisma {
 
   export type TelefonoCreateWithoutCreadoPorInput = {
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35555,6 +35672,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -35573,6 +35691,7 @@ export namespace Prisma {
 
   export type TelefonoCreateWithoutModificadoPorInput = {
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35584,6 +35703,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -35602,6 +35722,7 @@ export namespace Prisma {
 
   export type EmailCreateWithoutCreadoPorInput = {
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35613,6 +35734,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -35631,6 +35753,7 @@ export namespace Prisma {
 
   export type EmailCreateWithoutModificadoPorInput = {
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35642,6 +35765,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -35662,6 +35786,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35675,6 +35800,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -35695,6 +35821,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35708,6 +35835,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -35728,6 +35856,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35741,6 +35870,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -35761,6 +35891,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -35774,6 +35905,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -36847,6 +36979,7 @@ export namespace Prisma {
     id?: IntFilter<"Telefono"> | number
     personaId?: IntFilter<"Telefono"> | number
     numero?: StringFilter<"Telefono"> | string
+    observacion?: StringNullableFilter<"Telefono"> | string | null
     estado?: EnumEstadoContactoFilter<"Telefono"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"Telefono"> | number | null
     fechaCreacion?: DateTimeFilter<"Telefono"> | Date | string
@@ -36893,6 +37026,7 @@ export namespace Prisma {
     id?: IntFilter<"Email"> | number
     personaId?: IntFilter<"Email"> | number
     email?: StringFilter<"Email"> | string
+    observacion?: StringNullableFilter<"Email"> | string | null
     estado?: EnumEstadoContactoFilter<"Email"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"Email"> | number | null
     fechaCreacion?: DateTimeFilter<"Email"> | Date | string
@@ -36941,6 +37075,7 @@ export namespace Prisma {
     nombre?: StringFilter<"ReferenciaPersonal"> | string
     parentesco?: StringFilter<"ReferenciaPersonal"> | string
     telefono?: StringFilter<"ReferenciaPersonal"> | string
+    observacion?: StringNullableFilter<"ReferenciaPersonal"> | string | null
     estado?: EnumEstadoContactoFilter<"ReferenciaPersonal"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"ReferenciaPersonal"> | number | null
     fechaCreacion?: DateTimeFilter<"ReferenciaPersonal"> | Date | string
@@ -36989,6 +37124,7 @@ export namespace Prisma {
     nombre?: StringFilter<"ReferenciaLaboral"> | string
     empresa?: StringNullableFilter<"ReferenciaLaboral"> | string | null
     telefono?: StringFilter<"ReferenciaLaboral"> | string
+    observacion?: StringNullableFilter<"ReferenciaLaboral"> | string | null
     estado?: EnumEstadoContactoFilter<"ReferenciaLaboral"> | $Enums.EstadoContacto
     creadoPorId?: IntNullableFilter<"ReferenciaLaboral"> | number | null
     fechaCreacion?: DateTimeFilter<"ReferenciaLaboral"> | Date | string
@@ -37684,6 +37820,7 @@ export namespace Prisma {
 
   export type TelefonoCreateWithoutPersonaInput = {
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -37694,6 +37831,7 @@ export namespace Prisma {
   export type TelefonoUncheckedCreateWithoutPersonaInput = {
     id?: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -37713,6 +37851,7 @@ export namespace Prisma {
 
   export type EmailCreateWithoutPersonaInput = {
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -37723,6 +37862,7 @@ export namespace Prisma {
   export type EmailUncheckedCreateWithoutPersonaInput = {
     id?: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -37744,6 +37884,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -37756,6 +37897,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -37777,6 +37919,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     fechaModificacion?: Date | string
@@ -37789,6 +37932,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -47927,6 +48071,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -47937,6 +48082,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -47947,6 +48093,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -47957,6 +48104,7 @@ export namespace Prisma {
     id?: number
     personaId: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -47969,6 +48117,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -47981,6 +48130,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -47993,6 +48143,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     fechaCreacion?: Date | string
     modificadoPorId?: number | null
@@ -48005,6 +48156,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -48705,6 +48857,7 @@ export namespace Prisma {
 
   export type TelefonoUpdateWithoutCreadoPorInput = {
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48716,6 +48869,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48726,6 +48880,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48734,6 +48889,7 @@ export namespace Prisma {
 
   export type TelefonoUpdateWithoutModificadoPorInput = {
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48745,6 +48901,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48755,6 +48912,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48763,6 +48921,7 @@ export namespace Prisma {
 
   export type EmailUpdateWithoutCreadoPorInput = {
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48774,6 +48933,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48784,6 +48944,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48792,6 +48953,7 @@ export namespace Prisma {
 
   export type EmailUpdateWithoutModificadoPorInput = {
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48803,6 +48965,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48813,6 +48976,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     personaId?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48823,6 +48987,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48836,6 +49001,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48848,6 +49014,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48858,6 +49025,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48871,6 +49039,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48883,6 +49052,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48893,6 +49063,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48906,6 +49077,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48918,6 +49090,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     modificadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -48928,6 +49101,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48941,6 +49115,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48953,6 +49128,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49939,6 +50115,7 @@ export namespace Prisma {
   export type TelefonoCreateManyPersonaInput = {
     id?: number
     numero: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -49949,6 +50126,7 @@ export namespace Prisma {
   export type EmailCreateManyPersonaInput = {
     id?: number
     email: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -49961,6 +50139,7 @@ export namespace Prisma {
     nombre: string
     parentesco: string
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -49973,6 +50152,7 @@ export namespace Prisma {
     nombre: string
     empresa?: string | null
     telefono: string
+    observacion?: string | null
     estado?: $Enums.EstadoContacto
     creadoPorId?: number | null
     fechaCreacion?: Date | string
@@ -50004,6 +50184,7 @@ export namespace Prisma {
 
   export type TelefonoUpdateWithoutPersonaInput = {
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50014,6 +50195,7 @@ export namespace Prisma {
   export type TelefonoUncheckedUpdateWithoutPersonaInput = {
     id?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50024,6 +50206,7 @@ export namespace Prisma {
   export type TelefonoUncheckedUpdateManyWithoutPersonaInput = {
     id?: IntFieldUpdateOperationsInput | number
     numero?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50033,6 +50216,7 @@ export namespace Prisma {
 
   export type EmailUpdateWithoutPersonaInput = {
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50043,6 +50227,7 @@ export namespace Prisma {
   export type EmailUncheckedUpdateWithoutPersonaInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50053,6 +50238,7 @@ export namespace Prisma {
   export type EmailUncheckedUpdateManyWithoutPersonaInput = {
     id?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50064,6 +50250,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50076,6 +50263,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50088,6 +50276,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     parentesco?: StringFieldUpdateOperationsInput | string
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50099,6 +50288,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaModificacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50111,6 +50301,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50123,6 +50314,7 @@ export namespace Prisma {
     nombre?: StringFieldUpdateOperationsInput | string
     empresa?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: StringFieldUpdateOperationsInput | string
+    observacion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: EnumEstadoContactoFieldUpdateOperationsInput | $Enums.EstadoContacto
     creadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string

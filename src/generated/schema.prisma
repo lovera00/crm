@@ -133,6 +133,7 @@ model Telefono {
   personaId         Int
   persona           Persona        @relation(fields: [personaId], references: [id], onDelete: Cascade)
   numero            String
+  observacion       String?
   estado            EstadoContacto @default(Pendiente_de_Verificacion)
   creadoPorId       Int?
   creadoPor         Usuario?       @relation("TelefonoCreadoPor", fields: [creadoPorId], references: [id])
@@ -149,6 +150,7 @@ model Email {
   personaId         Int
   persona           Persona        @relation(fields: [personaId], references: [id], onDelete: Cascade)
   email             String         @unique
+  observacion       String?
   estado            EstadoContacto @default(Pendiente_de_Verificacion)
   creadoPorId       Int?
   creadoPor         Usuario?       @relation("EmailCreadoPor", fields: [creadoPorId], references: [id])
@@ -167,6 +169,7 @@ model ReferenciaPersonal {
   nombre            String
   parentesco        String
   telefono          String
+  observacion       String?
   estado            EstadoContacto @default(Pendiente_de_Verificacion)
   creadoPorId       Int?
   creadoPor         Usuario?       @relation("ReferenciaPersonalCreadaPor", fields: [creadoPorId], references: [id])
@@ -185,6 +188,7 @@ model ReferenciaLaboral {
   nombre            String
   empresa           String?
   telefono          String
+  observacion       String?
   estado            EstadoContacto @default(Pendiente_de_Verificacion)
   creadoPorId       Int?
   creadoPor         Usuario?       @relation("ReferenciaLaboralCreadaPor", fields: [creadoPorId], references: [id])

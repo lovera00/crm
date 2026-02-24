@@ -14,8 +14,17 @@ const publicRoutes = [
 const roleBasedRoutes: Record<string, string[]> = {
   '/api/personas': ['gestor', 'supervisor', 'administrador'],
   '/api/seguimientos': ['gestor', 'supervisor', 'administrador'],
-  '/api/autorizaciones': ['supervisor', 'administrador'], // Only supervisors and admins can approve/reject
-  '/api/actualizaciones-diarias': ['administrador'], // Only admins can trigger daily updates
+  '/api/autorizaciones': ['supervisor', 'administrador'],
+  '/api/actualizaciones-diarias': ['administrador'],
+  '/api/dashboard': ['gestor', 'supervisor', 'administrador'],
+  '/api/config': ['gestor', 'supervisor', 'administrador'],
+  '/api/telefonos': ['gestor', 'supervisor', 'administrador'],
+  '/api/emails': ['gestor', 'supervisor', 'administrador'],
+  '/api/referencias-personales': ['gestor', 'supervisor', 'administrador'],
+  '/api/referencias-laborales': ['gestor', 'supervisor', 'administrador'],
+  '/api/deudas': ['gestor', 'supervisor', 'administrador'],
+  '/api/estados-deuda': ['gestor', 'supervisor', 'administrador'],
+  '/api/usuarios': ['administrador'],
 };
 
 export async function middleware(request: NextRequest) {

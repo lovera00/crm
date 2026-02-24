@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Search, User, Phone, Mail, FileText } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Search, User, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,12 +15,15 @@ interface Persona {
   nombres: string;
   apellidos: string;
   documento: string;
+  telefonos?: { numero: string }[];
+  emails?: { email: string }[];
   funcionarioPublico: string;
   jubilado: string;
   ipsActivo: string;
 }
 
 export default function PersonasPage() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [personas, setPersonas] = useState<Persona[]>([]);
@@ -30,160 +34,140 @@ export default function PersonasPage() {
     
     setLoading(true);
     try {
-      // TODO: Implementar llamada a API
-      const response = await fetch(`/api/personas?search=${encodeURIComponent(searchTerm)}&limit=20&offset=0`);
+      const response = await fetch(`/api/personas?search=${encodeURIComponent(searchTerm)}&limit=20&offset=0`, {
+        credentials: 'include',
+      });
       if (response.ok) {
         const data = await response.json();
         setPersonas(data.personas || []);
         setTotal(data.total || 0);
-      } else {
-        console.error("Error en búsqueda:", await response.text());
       }
     } catch (error) {
-      console.error("Error de red:", error);
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    if (e.key === "Enter") handleSearch();
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Búsqueda de Personas</h1>
-        <p className="text-gray-600">
-          Busca personas por nombre, apellido o documento para gestionar deudas y seguimientos.
-        </p>
-      </div>
-
+    <div className="space-y-3">
+      {/* Buscador compacto */}
       <Card>
-        <CardHeader>
-          <CardTitle>Buscar Personas</CardTitle>
-          <CardDescription>
-            Ingresa nombre, apellido o documento (cédula, DNI, etc.)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-3">
           <div className="flex gap-2">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Ej: Juan Pérez, 12345678..."
-                className="pl-10"
+                placeholder="Buscar por nombre, apellido o documento..."
+                className="pl-8 h-9 text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyPress}
                 disabled={loading}
               />
             </div>
-            <Button onClick={handleSearch} disabled={loading}>
+            <Button onClick={handleSearch} disabled={loading} size="sm" className="h-9">
               {loading ? "Buscando..." : "Buscar"}
             </Button>
-          </div>
-          <div className="mt-4 text-sm text-gray-500">
-            <p>Tip: Puedes buscar por nombres, apellidos o número de documento.</p>
           </div>
         </CardContent>
       </Card>
 
+      {/* Resultados */}
       {loading ? (
         <Card>
-          <CardHeader>
-            <Skeleton className="h-6 w-48" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+          <CardContent className="p-3">
+            <div className="space-y-2">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
+                <Skeleton key={i} className="h-10 w-full" />
               ))}
             </div>
           </CardContent>
         </Card>
       ) : personas.length > 0 ? (
         <Card>
-          <CardHeader>
-            <CardTitle>Resultados ({total})</CardTitle>
-            <CardDescription>
-              {total > 20 ? `Mostrando 20 de ${total} resultados` : `Mostrando ${total} resultados`}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Persona</TableHead>
-                  <TableHead>Documento</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
+                <TableRow className="py-1">
+                  <TableHead className="py-2">Persona</TableHead>
+                  <TableHead className="py-2 w-32">Documento</TableHead>
+                  <TableHead className="py-2">Atributos</TableHead>
+                  <TableHead className="py-2 w-24 text-right">Acción</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {personas.map((persona) => (
-                  <TableRow key={persona.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <User className="h-5 w-5 text-blue-600" />
+                  <TableRow key={persona.id} className="py-1">
+                    <TableCell className="py-2">
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                          <User className="h-4 w-4 text-blue-600" />
                         </div>
                         <div>
-                          <p className="font-medium">{persona.nombres} {persona.apellidos}</p>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Phone className="h-3 w-3" />
-                            <span>Teléfonos</span>
-                            <Mail className="h-3 w-3 ml-2" />
-                            <span>Emails</span>
+                          <p className="font-medium text-sm">{persona.nombres} {persona.apellidos}</p>
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            {persona.telefonos?.[0] && (
+                              <span className="flex items-center gap-0.5">
+                                <Phone className="h-2.5 w-2.5" />
+                                {persona.telefonos[0].numero}
+                              </span>
+                            )}
+                            {persona.emails?.[0] && (
+                              <span className="flex items-center gap-0.5">
+                                <Mail className="h-2.5 w-2.5" />
+                                {persona.emails[0].email}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <code className="bg-gray-100 px-2 py-1 rounded text-sm">{persona.documento}</code>
+                    <TableCell className="py-2">
+                      <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">{persona.documento}</code>
                     </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Badge variant={persona.funcionarioPublico === "SI" ? "default" : "secondary"} className="text-xs">
-                            Func. Público: {persona.funcionarioPublico}
-                          </Badge>
-                          <Badge variant={persona.jubilado === "SI" ? "default" : "secondary"} className="text-xs">
-                            Jubilado: {persona.jubilado}
-                          </Badge>
-                        </div>
-                        <Badge variant={persona.ipsActivo === "SI" ? "default" : "secondary"} className="text-xs">
-                          IPS Activo: {persona.ipsActivo}
-                        </Badge>
+                    <TableCell className="py-2">
+                      <div className="flex flex-wrap gap-1">
+                        {persona.funcionarioPublico === 'SI' && (
+                          <Badge className="bg-blue-100 text-blue-800 text-[10px] py-0">FP</Badge>
+                        )}
+                        {persona.jubilado === 'SI' && (
+                          <Badge className="bg-green-100 text-green-800 text-[10px] py-0">JUB</Badge>
+                        )}
+                        {persona.ipsActivo === 'SI' && (
+                          <Badge className="bg-purple-100 text-purple-800 text-[10px] py-0">IPS</Badge>
+                        )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex gap-2 justify-end">
-                        <Button variant="outline" size="sm">
-                          <FileText className="h-4 w-4 mr-2" />
-                          Ver Detalles
-                        </Button>
-                        <Button size="sm">
-                          Crear Seguimiento
-                        </Button>
-                      </div>
+                    <TableCell className="py-2 text-right">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 text-xs"
+                        onClick={() => router.push(`/dashboard/personas/${persona.id}`)}
+                      >
+                        Gestionar
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            {total > 20 && (
+              <div className="p-2 text-xs text-gray-500 text-center border-t">
+                Mostrando 20 de {total} resultados
+              </div>
+            )}
           </CardContent>
         </Card>
       ) : searchTerm ? (
         <Card>
-          <CardContent className="py-8 text-center">
-            <User className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium">No se encontraron personas</h3>
-            <p className="text-gray-500 mt-2">
-              No hay resultados para "{searchTerm}". Intenta con otros términos.
-            </p>
+          <CardContent className="p-4 text-center text-gray-500 text-sm">
+            No se encontraron personas para "{searchTerm}"
           </CardContent>
         </Card>
       ) : null}

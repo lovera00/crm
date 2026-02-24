@@ -1,0 +1,60 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '../../../../src/infrastructure/lib/prisma';
+import { getToken } from 'next-auth/jwt';
+import { validateRequestBody } from '../../../../src/infrastructure/middleware/with-error-handler';
+import { z } from 'zod';
+import { AppError } from '../../../../src/domain/errors/app-error';
+
+const actualizarTelefonoSchema = z.object({
+  numero: z.string().min(1).optional(),
+  observacion: z.string().optional(),
+  estado: z.enum(['Pendiente_de_Verificacion', 'Activo', 'Inactivo']).optional(),
+});
+
+function extractId(request: NextRequest): number {
+  const pathname = request.nextUrl.pathname;
+  const idMatch = pathname.match(/\/api\/telefonos\/(\d+)/);
+  if (!idMatch) throw new AppError('ID inválido', 400, 'VALIDATION_ERROR');
+  return parseInt(idMatch[1], 10);
+}
+
+async function GETHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+  
+  const id = extractId(request);
+  const telefono = await prisma.telefono.findUnique({ where: { id } });
+  if (!telefono) throw new AppError('Teléfono no encontrado', 404, 'NOT_FOUND');
+  return NextResponse.json(telefono);
+}
+
+async function PUTHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+  
+  const id = extractId(request);
+  const body = await validateRequestBody(request, actualizarTelefonoSchema);
+  
+  const telefono = await prisma.telefono.update({
+    where: { id },
+    data: { ...body, modificadoPorId: parseInt(token.id as string, 10) },
+  });
+  return NextResponse.json(telefono);
+}
+
+async function DELETEHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+  
+  const id = extractId(request);
+  await prisma.telefono.delete({ where: { id } });
+  return NextResponse.json({ message: 'Teléfono eliminado' });
+}
+
+export { GETHandler as GET, PUTHandler as PUT, DELETEHandler as DELETE };

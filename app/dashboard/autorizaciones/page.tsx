@@ -71,7 +71,7 @@ interface ConteoAutorizaciones {
 }
 
 const PRIORIDADES = [
-  { value: "", label: "Todas las prioridades" },
+  { value: "all", label: "Todas las prioridades" },
   { value: "Baja", label: "Baja" },
   { value: "Media", label: "Media" },
   { value: "Alta", label: "Alta" },
@@ -85,7 +85,7 @@ export default function AutorizacionesPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [porPagina] = useState(10);
-  const [prioridadFilter, setPrioridadFilter] = useState("");
+  const [prioridadFilter, setPrioridadFilter] = useState("all");
   const [solicitudDetalle, setSolicitudDetalle] = useState<SolicitudDetalle | null>(null);
   const [loadingDetalle, setLoadingDetalle] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -98,7 +98,7 @@ export default function AutorizacionesPage() {
       const response = await fetch("/api/autorizaciones/count");
       if (response.ok) {
         const data = await response.json();
-        setConteo(data);
+        setConteo({ pendientes: data.count, urgentes: 0 });
       }
     } catch (error) {
       console.error("Error obteniendo conteo:", error);
@@ -111,7 +111,7 @@ export default function AutorizacionesPage() {
       const params = new URLSearchParams();
       params.append("pagina", page.toString());
       params.append("porPagina", porPagina.toString());
-      if (prioridadFilter) params.append("prioridad", prioridadFilter);
+      if (prioridadFilter && prioridadFilter !== "all") params.append("prioridad", prioridadFilter);
 
       const response = await fetch(`/api/autorizaciones?${params.toString()}`);
       if (response.ok) {
@@ -293,7 +293,7 @@ export default function AutorizacionesPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button variant="outline" onClick={() => { setPrioridadFilter(""); setPage(1); }} disabled={loading}>
+            <Button variant="outline" onClick={() => { setPrioridadFilter("all"); setPage(1); }} disabled={loading}>
               Limpiar
             </Button>
           </div>

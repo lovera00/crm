@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../../src/infrastructure/lib/prisma';
-import { createAuthenticatedRouteHandler } from '../../../../../src/infrastructure/auth/auth-middleware';
+import { getToken } from 'next-auth/jwt';
 import { validateRequestBody } from '../../../../../src/infrastructure/middleware/with-error-handler';
 import { z } from 'zod';
-import { AuthenticatedUser } from '../../../../../src/infrastructure/auth/types';
 import { AppError } from '../../../../../src/domain/errors/app-error';
 
 const actualizarTipoGestionSchema = z.object({
@@ -30,7 +29,12 @@ function extractId(request: NextRequest): number {
   return id;
 }
 
-async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
+async function GETHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+
   const id = extractId(request);
 
   const tipoGestion = await prisma.tipoGestion.findUnique({
@@ -70,8 +74,13 @@ async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
   });
 }
 
-async function PUTHandler(request: NextRequest, user: AuthenticatedUser) {
-  if (user.role !== 'administrador') {
+async function PUTHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+
+  if (token.role !== 'administrador') {
     throw new AppError('No tienes permisos para modificar tipos de gestión', 403, 'FORBIDDEN');
   }
 
@@ -96,7 +105,7 @@ async function PUTHandler(request: NextRequest, user: AuthenticatedUser) {
     where: { id },
     data: {
       ...body,
-      modificadoPorId: parseInt(user.id, 10),
+      modificadoPorId: parseInt(token.id as string, 10),
     },
   });
 
@@ -112,8 +121,13 @@ async function PUTHandler(request: NextRequest, user: AuthenticatedUser) {
   });
 }
 
-async function DELETEHandler(request: NextRequest, user: AuthenticatedUser) {
-  if (user.role !== 'administrador') {
+async function DELETEHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+
+  if (token.role !== 'administrador') {
     throw new AppError('No tienes permisos para eliminar tipos de gestión', 403, 'FORBIDDEN');
   }
 
@@ -128,21 +142,11 @@ async function DELETEHandler(request: NextRequest, user: AuthenticatedUser) {
     where: { id },
     data: {
       activo: false,
-      modificadoPorId: parseInt(user.id, 10),
+      modificadoPorId: parseInt(token.id as string, 10),
     },
   });
 
   return NextResponse.json({ message: 'Tipo de gestión desactivado correctamente' });
 }
 
-export const GET = createAuthenticatedRouteHandler(GETHandler, {
-  requiredRoles: ['gestor', 'supervisor', 'administrador']
-});
-
-export const PUT = createAuthenticatedRouteHandler(PUTHandler, {
-  requiredRoles: ['administrador']
-});
-
-export const DELETE = createAuthenticatedRouteHandler(DELETEHandler, {
-  requiredRoles: ['administrador']
-});
+export { GETHandler as GET, PUTHandler as PUT, DELETEHandler as DELETE };

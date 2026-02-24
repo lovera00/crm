@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../src/infrastructure/lib/prisma';
-import { createAuthenticatedRouteHandler } from '../../../../src/infrastructure/auth/auth-middleware';
+import { getToken } from 'next-auth/jwt';
 import { validateRequestBody } from '../../../../src/infrastructure/middleware/with-error-handler';
 import { z } from 'zod';
-import { AuthenticatedUser } from '../../../../src/infrastructure/auth/types';
 import { AppError } from '../../../../src/domain/errors/app-error';
 
 const crearTipoGestionSchema = z.object({
@@ -17,14 +16,19 @@ const crearTipoGestionSchema = z.object({
 
 const listarTiposGestionSchema = z.object({
   activo: z.enum(['true', 'false']).optional(),
-  limit: z.coerce.number().min(1).max(100).default(20),
-  offset: z.coerce.number().min(0).default(0),
+  limit: z.coerce.number().min(1).max(100).default(20).optional(),
+  offset: z.coerce.number().min(0).default(0).optional(),
 });
 
 type CrearTipoGestionInput = z.infer<typeof crearTipoGestionSchema>;
 
-async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
-  if (user.role !== 'administrador') {
+async function POSTHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+
+  if (token.role !== 'administrador') {
     throw new AppError('No tienes permisos para crear tipos de gestión', 403, 'FORBIDDEN');
   }
 
@@ -46,7 +50,7 @@ async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
       orden: body.orden ?? 0,
       color: body.color,
       icono: body.icono,
-      creadoPorId: parseInt(user.id, 10),
+      creadoPorId: parseInt(token.id as string, 10),
     },
   });
 
@@ -62,13 +66,18 @@ async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
   }, { status: 201 });
 }
 
-async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
+async function GETHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+
   const { searchParams } = new URL(request.url);
-  const query = listarTiposGestionSchema.parse({
-    activo: searchParams.get('activo'),
-    limit: searchParams.get('limit'),
-    offset: searchParams.get('offset'),
-  });
+  const query = {
+    activo: searchParams.get('activo') || undefined,
+    limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : 20,
+    offset: searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 10) : 0,
+  };
 
   const where: Record<string, unknown> = {};
   if (query.activo !== undefined) {
@@ -103,10 +112,4 @@ async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
   });
 }
 
-export const POST = createAuthenticatedRouteHandler(POSTHandler, {
-  requiredRoles: ['administrador']
-});
-
-export const GET = createAuthenticatedRouteHandler(GETHandler, {
-  requiredRoles: ['gestor', 'supervisor', 'administrador']
-});
+export { POSTHandler as POST, GETHandler as GET };

@@ -9,6 +9,7 @@ const actualizarReferenciaPersonalSchema = z.object({
   nombre: z.string().min(1).optional(),
   parentesco: z.string().optional(),
   telefono: z.string().min(1).optional(),
+  observacion: z.string().optional(),
   estado: z.enum(['Pendiente_de_Verificacion', 'Activo', 'Inactivo']).optional(),
 });
 

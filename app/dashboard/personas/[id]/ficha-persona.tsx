@@ -47,12 +47,14 @@ interface Persona {
 interface Telefono {
   id: number;
   numero: string;
+  observacion?: string | null;
   estado: string;
 }
 
 interface Email {
   id: number;
   email: string;
+  observacion?: string | null;
   estado: string;
 }
 
@@ -61,6 +63,7 @@ interface ReferenciaPersonal {
   nombre: string;
   parentesco: string;
   telefono: string;
+  observacion?: string | null;
   estado: string;
 }
 
@@ -69,6 +72,7 @@ interface ReferenciaLaboral {
   nombre: string;
   empresa: string | null;
   telefono: string;
+  observacion?: string | null;
   estado: string;
 }
 
@@ -185,9 +189,13 @@ export default function FichaPersona({ personaId, user }: Props) {
 
   // Form states
   const [newTelefono, setNewTelefono] = useState('');
+  const [newTelefonoObs, setNewTelefonoObs] = useState('');
   const [newEmail, setNewEmail] = useState('');
+  const [newEmailObs, setNewEmailObs] = useState('');
   const [newRefPersonal, setNewRefPersonal] = useState({ nombre: '', parentesco: '', telefono: '' });
+  const [newRefPersonalObs, setNewRefPersonalObs] = useState('');
   const [newRefLaboral, setNewRefLaboral] = useState({ nombre: '', empresa: '', telefono: '' });
+  const [newRefLaboralObs, setNewRefLaboralObs] = useState('');
 
   const [selectedDeudas, setSelectedDeudas] = useState<number[]>([]);
   const [tipoGestionId, setTipoGestionId] = useState<string>('');
@@ -348,12 +356,13 @@ export default function FichaPersona({ personaId, user }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ personaId, numero: newTelefono }),
+        body: JSON.stringify({ personaId, numero: newTelefono, observacion: newTelefonoObs || undefined }),
       });
       if (res.ok) {
         const data = await res.json();
         setTelefonos(prev => [...prev, { id: data.id, numero: data.numero, estado: data.estado }]);
         setNewTelefono('');
+        setNewTelefonoObs('');
         setShowAddTelefono(false);
       }
     } catch (err) {
@@ -371,12 +380,13 @@ export default function FichaPersona({ personaId, user }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ personaId, email: newEmail }),
+        body: JSON.stringify({ personaId, email: newEmail, observacion: newEmailObs || undefined }),
       });
       if (res.ok) {
         const data = await res.json();
         setEmails(prev => [...prev, { id: data.id, email: data.email, estado: data.estado }]);
         setNewEmail('');
+        setNewEmailObs('');
         setShowAddEmail(false);
       }
     } catch (err) {
@@ -394,7 +404,7 @@ export default function FichaPersona({ personaId, user }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ personaId, ...newRefPersonal }),
+        body: JSON.stringify({ personaId, ...newRefPersonal, observacion: newRefPersonalObs || undefined }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -402,6 +412,7 @@ export default function FichaPersona({ personaId, user }: Props) {
           id: data.id, nombre: data.nombre, parentesco: data.parentesco, telefono: data.telefono, estado: data.estado 
         }]);
         setNewRefPersonal({ nombre: '', parentesco: '', telefono: '' });
+        setNewRefPersonalObs('');
         setShowAddReferenciaPersonal(false);
       }
     } catch (err) {
@@ -419,7 +430,7 @@ export default function FichaPersona({ personaId, user }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ personaId, ...newRefLaboral }),
+        body: JSON.stringify({ personaId, ...newRefLaboral, observacion: newRefLaboralObs || undefined }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -427,6 +438,7 @@ export default function FichaPersona({ personaId, user }: Props) {
           id: data.id, nombre: data.nombre, empresa: data.empresa, telefono: data.telefono, estado: data.estado 
         }]);
         setNewRefLaboral({ nombre: '', empresa: '', telefono: '' });
+        setNewRefLaboralObs('');
         setShowAddReferenciaLaboral(false);
       }
     } catch (err) {
@@ -581,9 +593,14 @@ export default function FichaPersona({ personaId, user }: Props) {
           <CardContent className="p-2 space-y-1">
             {telefonos.slice(0, 5).map(tel => (
               <div key={tel.id} className="flex items-center justify-between text-sm p-1 rounded hover:bg-gray-50">
-                <div className="flex items-center gap-2">
-                  <Phone className="h-3 w-3 text-gray-400" />
-                  <span>{tel.numero}</span>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                    <span className="truncate">{tel.numero}</span>
+                  </div>
+                  {tel.observacion && (
+                    <span className="text-[10px] text-gray-400 ml-5 truncate">{tel.observacion}</span>
+                  )}
                 </div>
                 <div className="flex items-center gap-1">
                   <button 
@@ -618,9 +635,14 @@ export default function FichaPersona({ personaId, user }: Props) {
           <CardContent className="p-2 space-y-1">
             {emails.slice(0, 5).map(email => (
               <div key={email.id} className="flex items-center justify-between text-sm p-1 rounded hover:bg-gray-50">
-                <div className="flex items-center gap-2 overflow-hidden">
-                  <Mail className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                  <span className="truncate">{email.email}</span>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                    <span className="truncate">{email.email}</span>
+                  </div>
+                  {email.observacion && (
+                    <span className="text-[10px] text-gray-400 ml-5 truncate">{email.observacion}</span>
+                  )}
                 </div>
                 <button 
                   onClick={() => handleToggleEstado('email', email.id, email.estado)}
@@ -658,9 +680,14 @@ export default function FichaPersona({ personaId, user }: Props) {
           <CardContent className="p-2 space-y-1 max-h-40 overflow-y-auto">
             {referenciasPersonales.slice(0, 3).map(ref => (
               <div key={`p-${ref.id}`} className="flex items-center justify-between text-xs p-1 rounded hover:bg-gray-50">
-                <div className="flex items-center gap-1 overflow-hidden">
-                  <User className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                  <span className="truncate">{ref.nombre} ({ref.parentesco || 'sin parentesco'})</span>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <User className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                    <span className="truncate">{ref.nombre} ({ref.parentesco || 'sin parentesco'})</span>
+                  </div>
+                  {ref.observacion && (
+                    <span className="text-[9px] text-gray-400 ml-4 truncate">{ref.observacion}</span>
+                  )}
                 </div>
                 <button 
                   onClick={() => handleToggleEstado('refpersonal', ref.id, ref.estado)}
@@ -672,9 +699,14 @@ export default function FichaPersona({ personaId, user }: Props) {
             ))}
             {referenciasLaborales.slice(0, 2).map(ref => (
               <div key={`l-${ref.id}`} className="flex items-center justify-between text-xs p-1 rounded hover:bg-gray-50">
-                <div className="flex items-center gap-1 overflow-hidden">
-                  <Briefcase className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                  <span className="truncate">{ref.nombre} {ref.empresa && `(${ref.empresa})`}</span>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <Briefcase className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                    <span className="truncate">{ref.nombre} {ref.empresa && `(${ref.empresa})`}</span>
+                  </div>
+                  {ref.observacion && (
+                    <span className="text-[9px] text-gray-400 ml-4 truncate">{ref.observacion}</span>
+                  )}
                 </div>
                 <button 
                   onClick={() => handleToggleEstado('reflaboral', ref.id, ref.estado)}
@@ -705,6 +737,11 @@ export default function FichaPersona({ personaId, user }: Props) {
               value={newTelefono}
               onChange={(e) => setNewTelefono(e.target.value)}
             />
+            <Input 
+              placeholder="Observación (opcional)" 
+              value={newTelefonoObs}
+              onChange={(e) => setNewTelefonoObs(e.target.value)}
+            />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAddTelefono(false)}>Cancelar</Button>
@@ -727,6 +764,11 @@ export default function FichaPersona({ personaId, user }: Props) {
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
+            />
+            <Input 
+              placeholder="Observación (opcional)" 
+              value={newEmailObs}
+              onChange={(e) => setNewEmailObs(e.target.value)}
             />
           </div>
           <DialogFooter>
@@ -760,6 +802,11 @@ export default function FichaPersona({ personaId, user }: Props) {
               value={newRefPersonal.telefono}
               onChange={(e) => setNewRefPersonal({...newRefPersonal, telefono: e.target.value})}
             />
+            <Input 
+              placeholder="Observación (opcional)" 
+              value={newRefPersonalObs}
+              onChange={(e) => setNewRefPersonalObs(e.target.value)}
+            />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAddReferenciaPersonal(false)}>Cancelar</Button>
@@ -791,6 +838,11 @@ export default function FichaPersona({ personaId, user }: Props) {
               placeholder="Teléfono" 
               value={newRefLaboral.telefono}
               onChange={(e) => setNewRefLaboral({...newRefLaboral, telefono: e.target.value})}
+            />
+            <Input 
+              placeholder="Observación (opcional)" 
+              value={newRefLaboralObs}
+              onChange={(e) => setNewRefLaboralObs(e.target.value)}
             />
           </div>
           <DialogFooter>

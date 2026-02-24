@@ -10,6 +10,7 @@ const crearReferenciaLaboralSchema = z.object({
   nombre: z.string().min(1, 'Nombre requerido'),
   empresa: z.string().optional(),
   telefono: z.string().min(1, 'Teléfono requerido'),
+  observacion: z.string().optional(),
 });
 
 type CrearReferenciaLaboralInput = z.infer<typeof crearReferenciaLaboralSchema>;
@@ -36,6 +37,7 @@ async function POSTHandler(request: NextRequest) {
       nombre: body.nombre,
       empresa: body.empresa || null,
       telefono: body.telefono,
+      observacion: body.observacion || null,
       creadoPorId: parseInt(token.id as string, 10),
     },
   });
@@ -46,6 +48,7 @@ async function POSTHandler(request: NextRequest) {
     nombre: referencia.nombre,
     empresa: referencia.empresa,
     telefono: referencia.telefono,
+    observacion: referencia.observacion,
     estado: referencia.estado,
     fechaCreacion: referencia.fechaCreacion,
   }, { status: 201 });

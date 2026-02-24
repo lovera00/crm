@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../src/infrastructure/lib/prisma';
-import { createAuthenticatedRouteHandler } from '../../../../src/infrastructure/auth/auth-middleware';
+import { getToken } from 'next-auth/jwt';
 import { validateRequestBody } from '../../../../src/infrastructure/middleware/with-error-handler';
 import { z } from 'zod';
-import { AuthenticatedUser } from '../../../../src/infrastructure/auth/types';
 import { AppError } from '../../../../src/domain/errors/app-error';
 
 const crearReglaTransicionSchema = z.object({
@@ -27,8 +26,13 @@ const listarReglasSchema = z.object({
 
 type CrearReglaTransicionInput = z.infer<typeof crearReglaTransicionSchema>;
 
-async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
-  if (user.role !== 'administrador') {
+async function POSTHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+
+  if (token.role !== 'administrador') {
     throw new AppError('No tienes permisos para crear reglas de transición', 403, 'FORBIDDEN');
   }
 
@@ -81,7 +85,7 @@ async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
       validacionAdicional: body.validacionAdicional,
       prioridad: body.prioridad ?? 0,
       activo: body.activo ?? true,
-      creadoPorId: parseInt(user.id, 10),
+      creadoPorId: parseInt(token.id as string, 10),
     },
   });
 
@@ -98,7 +102,12 @@ async function POSTHandler(request: NextRequest, user: AuthenticatedUser) {
   }, { status: 201 });
 }
 
-async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
+async function GETHandler(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
+    throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');
+  }
+
   const { searchParams } = new URL(request.url);
   const query = listarReglasSchema.parse({
     tipo_gestion_id: searchParams.get('tipo_gestion_id'),
@@ -156,10 +165,4 @@ async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
   });
 }
 
-export const POST = createAuthenticatedRouteHandler(POSTHandler, {
-  requiredRoles: ['administrador']
-});
-
-export const GET = createAuthenticatedRouteHandler(GETHandler, {
-  requiredRoles: ['gestor', 'supervisor', 'administrador']
-});
+export { POSTHandler as POST, GETHandler as GET };

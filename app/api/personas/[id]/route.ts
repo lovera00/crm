@@ -60,12 +60,14 @@ export async function GET(request: NextRequest) {
       telefonos: persona.telefonos.map(t => ({
         id: t.id,
         numero: t.numero,
+        observacion: t.observacion,
         estado: t.estado,
         fechaModificacion: t.fechaModificacion,
       })),
       emails: persona.emails.map(e => ({
         id: e.id,
         email: e.email,
+        observacion: e.observacion,
         estado: e.estado,
         fechaModificacion: e.fechaModificacion,
       })),
@@ -74,6 +76,7 @@ export async function GET(request: NextRequest) {
         nombre: rp.nombre,
         parentesco: rp.parentesco,
         telefono: rp.telefono,
+        observacion: rp.observacion,
         estado: rp.estado,
       })),
       referenciasLaborales: persona.referenciasLaborales.map(rl => ({
@@ -81,6 +84,7 @@ export async function GET(request: NextRequest) {
         nombre: rl.nombre,
         empresa: rl.empresa,
         telefono: rl.telefono,
+        observacion: rl.observacion,
         estado: rl.estado,
       })),
     });

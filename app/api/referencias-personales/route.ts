@@ -11,6 +11,7 @@ const crearReferenciaSchema = z.object({
   parentesco: z.string().optional(),
   telefono: z.string().min(1),
   empresa: z.string().optional(),
+  observacion: z.string().optional(),
 });
 
 async function POSTHandler(request: NextRequest) {
@@ -26,10 +27,20 @@ async function POSTHandler(request: NextRequest) {
       nombre: body.nombre,
       parentesco: body.parentesco || '',
       telefono: body.telefono,
+      observacion: body.observacion || null,
       creadoPorId: parseInt(token.id as string, 10),
     },
   });
-  return NextResponse.json(referencia, { status: 201 });
+  return NextResponse.json({
+    id: referencia.id,
+    personaId: referencia.personaId,
+    nombre: referencia.nombre,
+    parentesco: referencia.parentesco,
+    telefono: referencia.telefono,
+    observacion: referencia.observacion,
+    estado: referencia.estado,
+    fechaCreacion: referencia.fechaCreacion,
+  }, { status: 201 });
 }
 
 export { POSTHandler as POST };

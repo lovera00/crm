@@ -12,7 +12,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue 
 } from '@/components/ui/select';
 import { 
-  ChevronLeft, ChevronRight, Calendar, Phone, User, DollarSign, AlertCircle
+  ChevronLeft, ChevronRight, Calendar, Phone, User, DollarSign, AlertCircle,
+  TrendingUp, TrendingDown, Users, Clock, CheckCircle
 } from 'lucide-react';
 
 interface AgendaItem {
@@ -37,6 +38,16 @@ interface Resumen {
 interface EstadosDeuda {
   id: number;
   nombre: string;
+}
+
+interface MetricasGestor {
+  totalDeudas: number;
+  enGestion: number;
+  conAcuerdo: number;
+  promedioMora: number;
+  carteraTotal: number;
+  seguimientosUltimaSemana: number;
+  solicitudesPendientes: number;
 }
 
 function formatCurrency(amount: number): string {
@@ -80,6 +91,10 @@ export default function DashboardClient({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  // Métricas del gestor
+  const [metricas, setMetricas] = useState<MetricasGestor | null>(null);
+  
+  // Agenda
   const [fecha, setFecha] = useState(() => new Date().toISOString().split('T')[0]);
   const [items, setItems] = useState<AgendaItem[]>([]);
   const [resumen, setResumen] = useState<Resumen>({ vencidos: 0, hoy: 0, futuro: 0, total: 0 });
@@ -100,6 +115,23 @@ export default function DashboardClient({
     }
     fetchEstados();
   }, []);
+
+  useEffect(() => {
+    async function fetchMetricas() {
+      if (role !== 'gestor') return;
+      
+      try {
+        const res = await fetch('/api/dashboard/stats', { credentials: 'include' });
+        const data = await res.json();
+        if (data.metricas) {
+          setMetricas(data.metricas);
+        }
+      } catch (err) {
+        console.error('Error fetching metricas:', err);
+      }
+    }
+    fetchMetricas();
+  }, [role]);
 
   useEffect(() => {
     async function fetchAgenda() {
@@ -366,7 +398,75 @@ export default function DashboardClient({
   };
 
   const renderGestorDashboard = () => {
-    return renderAgendaGestor();
+    return (
+      <div className="space-y-4">
+        {/* Métricas del Gestor */}
+        {metricas && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-blue-700">Cartera Total</p>
+                    <p className="text-lg font-bold text-blue-800">{formatCurrency(metricas.carteraTotal)}</p>
+                  </div>
+                  <DollarSign className="h-8 w-8 text-blue-300" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-amber-700">En Gestión</p>
+                    <p className="text-lg font-bold text-amber-800">{metricas.enGestion}</p>
+                  </div>
+                  <Clock className="h-8 w-8 text-amber-300" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-green-700">Con Acuerdo</p>
+                    <p className="text-lg font-bold text-green-800">{metricas.conAcuerdo}</p>
+                  </div>
+                  <CheckCircle className="h-8 w-8 text-green-300" />
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-red-700">Prom. Mora</p>
+                    <p className="text-lg font-bold text-red-800">{Math.round(metricas.promedioMora)} días</p>
+                  </div>
+                  <TrendingUp className="h-8 w-8 text-red-300" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        
+        {/* Resumen rápido */}
+        {metricas && (
+          <div className="flex gap-3 text-xs">
+            <Badge className="bg-blue-100 text-blue-800">{metricas.totalDeudas} total deudas</Badge>
+            <Badge className="bg-purple-100 text-purple-800">{metricas.seguimientosUltimaSemana} gestions/semana</Badge>
+            {metricas.solicitudesPendientes > 0 && (
+              <Badge className="bg-yellow-100 text-yellow-800">{metricas.solicitudesPendientes} auths pendientes</Badge>
+            )}
+          </div>
+        )}
+        
+        {renderAgendaGestor()}
+      </div>
+    );
   };
 
   const renderSupervisorDashboard = () => {

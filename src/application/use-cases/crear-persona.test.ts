@@ -17,6 +17,7 @@ describe('CrearPersonaUseCase', () => {
         (persona as any).props.id = 100;
       }),
       buscarPorNombreOApellido: vi.fn(),
+      buscarConPaginacion: vi.fn().mockResolvedValue({ personas: [], total: 0 }),
       eliminar: vi.fn(),
     };
     useCase = new CrearPersonaUseCase(personaRepository);
@@ -85,6 +86,7 @@ describe('CrearPersonaUseCase', () => {
         // No asignar ID
       }),
       buscarPorNombreOApellido: vi.fn(),
+      buscarConPaginacion: vi.fn().mockResolvedValue({ personas: [], total: 0 }),
       eliminar: vi.fn(),
     };
     const useCaseSinId = new CrearPersonaUseCase(personaRepositorySinId);

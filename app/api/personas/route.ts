@@ -29,6 +29,10 @@ const listarPersonasSchema = z.object({
   search: z.string().optional(),
   limit: z.coerce.number().min(1).max(100).default(20),
   offset: z.coerce.number().min(0).default(0),
+  fp: z.enum(['SI', 'NO']).optional(),
+  jubilado: z.enum(['SI', 'NO']).optional(),
+  ips: z.enum(['SI', 'NO']).optional(),
+  tieneDeudas: z.enum(['SI', 'NO']).optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -40,6 +44,10 @@ export async function GET(request: NextRequest) {
       search: searchParams.get('search'),
       limit: searchParams.get('limit'),
       offset: searchParams.get('offset'),
+      fp: searchParams.get('fp') as any,
+      jubilado: searchParams.get('jubilado') as any,
+      ips: searchParams.get('ips') as any,
+      tieneDeudas: searchParams.get('tieneDeudas') as any,
     });
 
     const whereClause: any = {};
@@ -51,40 +59,74 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const [personasData, total] = await Promise.all([
-      prisma.persona.findMany({
-        where: whereClause,
-        select: {
-          id: true,
-          nombres: true,
-          apellidos: true,
-          documento: true,
-        },
-        skip: query.offset,
-        take: query.limit,
-        orderBy: { id: 'desc' },
-      }),
-      prisma.persona.count({ where: whereClause }),
-    ]);
+    if (query.fp) {
+      whereClause.funcionarioPublico = query.fp;
+    }
+    if (query.jubilado) {
+      whereClause.jubilado = query.jubilado;
+    }
+    if (query.ips) {
+      whereClause.ipsActivo = query.ips;
+    }
 
-    const personasWithDeudaCount = await Promise.all(
-      personasData.map(async (p) => {
-        const deudaCount = await prisma.personaDeuda.count({
-          where: { personaId: p.id },
-        });
-        return {
-          id: p.id,
-          nombres: p.nombres,
-          apellidos: p.apellidos,
-          documento: p.documento,
-          deudaCount,
-        };
-      })
-    );
+    let personasData = await prisma.persona.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        nombres: true,
+        apellidos: true,
+        documento: true,
+        telefonos: { take: 1, orderBy: { fechaCreacion: 'desc' } },
+        emails: { take: 1, orderBy: { fechaCreacion: 'desc' } },
+        funcionarioPublico: true,
+        jubilado: true,
+        ipsActivo: true,
+      },
+      skip: query.offset,
+      take: query.limit,
+      orderBy: { id: 'desc' },
+    });
+
+    // Filtrar por tieneDeudas si se especifica
+    if (query.tieneDeudas) {
+      const personasConDeudas = await prisma.personaDeuda.findMany({
+        where: { personaId: { in: personasData.map(p => p.id) } },
+        select: { personaId: true },
+      });
+      const idsConDeudas = new Set(personasConDeudas.map(p => p.personaId));
+      
+      if (query.tieneDeudas === 'SI') {
+        personasData = personasData.filter(p => idsConDeudas.has(p.id));
+      } else {
+        personasData = personasData.filter(p => !idsConDeudas.has(p.id));
+      }
+    }
+
+    // Obtener conteo de deudas
+    const personaIds = personasData.map(p => p.id);
+    const deudaCounts = await prisma.personaDeuda.groupBy({
+      by: ['personaId'],
+      where: { personaId: { in: personaIds } },
+      _count: { id: true },
+    });
+    const deudaCountMap = new Map(deudaCounts.map(d => [d.personaId, d._count.id]));
+
+    const personasWithDeudaCount = personasData.map(p => ({
+      id: p.id,
+      nombres: p.nombres,
+      apellidos: p.apellidos,
+      documento: p.documento,
+      telefonos: p.telefonos,
+      emails: p.emails,
+      funcionarioPublico: p.funcionarioPublico,
+      jubilado: p.jubilado,
+      ipsActivo: p.ipsActivo,
+      deudaCount: deudaCountMap.get(p.id) || 0,
+    }));
 
     return NextResponse.json({
       personas: personasWithDeudaCount,
-      total,
+      total: personasWithDeudaCount.length,
       limit: query.limit,
       offset: query.offset,
     });

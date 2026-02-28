@@ -49,7 +49,7 @@ export default function DashboardSupervisorPage() {
 
   const fetchDashboard = async () => {
     try {
-      const res = await fetch("/api/dashboard/metrics");
+      const res = await fetch("/api/dashboard/metrics", { credentials: 'include' });
       if (res.ok) {
         const json = await res.json();
         setData(json);

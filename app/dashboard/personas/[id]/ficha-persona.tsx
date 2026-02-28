@@ -957,27 +957,37 @@ export default function FichaPersona({ personaId, user }: Props) {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-2">
-              {/* Selector deudas seleccionado */}
-              <div className="text-xs text-gray-500">
-                {selectedDeudas.length === 0 
-                  ? 'Click en deuda para seleccionar' 
-                  : `${selectedDeudas.length} deuda(s) seleccionada(s)`
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {/* Indicador de deudas seleccionadas */}
+              <div className={`flex items-center gap-2 text-xs px-2.5 py-2 rounded-md border transition-colors ${
+                selectedDeudas.length > 0
+                  ? 'bg-blue-50 border-blue-200 text-blue-700'
+                  : 'bg-gray-50 border-dashed border-gray-300 text-gray-500'
+              }`}>
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                  selectedDeudas.length > 0 ? 'bg-blue-500' : 'bg-gray-300'
+                }`} />
+                {selectedDeudas.length === 0
+                  ? 'Seleccione una o más deudas de la tabla'
+                  : `${selectedDeudas.length} deuda${selectedDeudas.length > 1 ? 's' : ''} seleccionada${selectedDeudas.length > 1 ? 's' : ''}`
                 }
               </div>
 
               {/* Tipo gestión */}
-              <div>
+              <div className="space-y-1">
+                <Label className="text-xs font-medium text-gray-600">
+                  Tipo de gestión <span className="text-red-500">*</span>
+                </Label>
                 <Select value={tipoGestionId} onValueChange={setTipoGestionId}>
                   <SelectTrigger className="h-8 text-sm">
-                    <SelectValue placeholder="Tipo gestión" />
+                    <SelectValue placeholder="Seleccionar tipo..." />
                   </SelectTrigger>
                   <SelectContent>
                     {tiposGestion.map(tipo => (
                       <SelectItem key={tipo.id} value={tipo.id.toString()} className="text-sm">
                         <div className="flex items-center gap-2">
                           {tipo.color && (
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tipo.color }} />
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: tipo.color }} />
                           )}
                           {tipo.nombre}
                         </div>
@@ -989,40 +999,89 @@ export default function FichaPersona({ personaId, user }: Props) {
 
               {/* Cambio de estado */}
               {reglaAplicada && (
-                <div className="text-xs bg-blue-50 p-1.5 rounded border border-blue-200">
-                  <span className="font-medium">{reglaAplicada.estadoOrigenNombre || 'Cualquiera'} → {reglaAplicada.estadoDestinoNombre || 'Mismo'}</span>
+                <div className="flex items-center gap-1.5 text-xs bg-blue-50 px-2.5 py-2 rounded-md border border-blue-200">
+                  <span className="text-blue-600">{reglaAplicada.estadoOrigenNombre || 'Cualquiera'}</span>
+                  <span className="text-blue-400 font-bold">→</span>
+                  <span className="font-semibold text-blue-700">{reglaAplicada.estadoDestinoNombre || 'Mismo'}</span>
                   {reglaAplicada.requiereAutorizacion && (
-                    <Badge className="ml-1 bg-yellow-100 text-yellow-800 text-[10px] py-0">⚠ Auth</Badge>
+                    <Badge className="ml-auto bg-amber-100 text-amber-700 text-[10px] py-0 border border-amber-200">
+                      ⚠ Requiere auth
+                    </Badge>
                   )}
                 </div>
               )}
 
               {/* Observación */}
-              <Textarea
-                placeholder="Observación..."
-                value={observacion}
-                onChange={(e) => setObservacion(e.target.value)}
-                maxLength={500}
-                rows={2}
-                className="text-sm resize-none"
-              />
-              <div className="text-xs text-gray-400 text-right">{observacion.length}/500</div>
+              <div className="space-y-1">
+                <Label className="text-xs font-medium text-gray-600">Observación</Label>
+                <Textarea
+                  placeholder="Detalle de la gestión realizada..."
+                  value={observacion}
+                  onChange={(e) => setObservacion(e.target.value)}
+                  maxLength={500}
+                  rows={3}
+                  className="text-sm resize-none"
+                />
+                <div className="flex justify-end">
+                  <span className={`text-[10px] ${observacion.length > 450 ? 'text-amber-600 font-medium' : 'text-gray-400'}`}>
+                    {observacion.length}/500
+                  </span>
+                </div>
+              </div>
 
-              {/* Próxima gestión (obligatorio) */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="fechaProximoSeg" className="text-xs whitespace-nowrap">Próxima gestión</Label>
-                <input
+              {/* Próxima gestión */}
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium text-gray-600">
+                  Próxima gestión <span className="text-red-500">*</span>
+                </Label>
+                <div className="flex gap-1 flex-wrap">
+                  {[
+                    { label: 'Mañana', days: 1 },
+                    { label: '+3 días', days: 3 },
+                    { label: '+1 sem', days: 7 },
+                    { label: '+15 días', days: 15 },
+                  ].map(({ label, days }) => (
+                    <button
+                      key={days}
+                      type="button"
+                      onClick={() => {
+                        const d = new Date();
+                        d.setDate(d.getDate() + days);
+                        d.setHours(9, 0, 0, 0);
+                        const pad = (n: number) => String(n).padStart(2, '0');
+                        setFechaProximo(
+                          `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+                        );
+                      }}
+                      className="text-[10px] px-2 py-0.5 rounded-md border border-gray-200 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 text-gray-600 transition-colors cursor-pointer"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <Input
                   id="fechaProximoSeg"
-                  type="date"
+                  type="datetime-local"
                   required
                   value={fechaProximo}
                   onChange={(e) => setFechaProximo(e.target.value)}
-                  className="border rounded px-1 py-0.5 text-xs flex-1"
+                  className="text-sm h-8"
                 />
               </div>
 
-              <Button type="submit" disabled={saving} className="w-full h-8 text-sm">
-                {saving ? 'Guardando...' : 'Guardar Gestión'}
+              <Button
+                type="submit"
+                disabled={saving || selectedDeudas.length === 0 || !tipoGestionId}
+                className="w-full h-8 text-sm"
+              >
+                {saving ? (
+                  <span className="flex items-center gap-1.5">
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
+                    Guardando...
+                  </span>
+                ) : (
+                  'Guardar Gestión'
+                )}
               </Button>
             </form>
           </CardContent>

@@ -427,11 +427,39 @@ export default function NuevoSeguimientoPage() {
               </p>
             </div>
 
-            <div>
-              <Label htmlFor="fechaProximo">Fecha próxima gestión <span className="text-red-500">*</span></Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="fechaProximo">
+                Fecha próxima gestión <span className="text-red-500">*</span>
+              </Label>
+              <div className="flex gap-1.5 flex-wrap">
+                {[
+                  { label: 'Mañana', days: 1 },
+                  { label: '+3 días', days: 3 },
+                  { label: '+1 semana', days: 7 },
+                  { label: '+15 días', days: 15 },
+                ].map(({ label, days }) => (
+                  <button
+                    key={days}
+                    type="button"
+                    onClick={() => {
+                      const d = new Date();
+                      d.setDate(d.getDate() + days);
+                      d.setHours(9, 0, 0, 0);
+                      const pad = (n: number) => String(n).padStart(2, '0');
+                      setFormData({
+                        ...formData,
+                        fechaProximoSeguimiento: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`,
+                      });
+                    }}
+                    className="text-xs px-2.5 py-1 rounded-md border border-gray-200 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 text-gray-600 transition-colors cursor-pointer"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
               <Input
                 id="fechaProximo"
-                type="date"
+                type="datetime-local"
                 required
                 value={formData.fechaProximoSeguimiento}
                 onChange={(e) =>

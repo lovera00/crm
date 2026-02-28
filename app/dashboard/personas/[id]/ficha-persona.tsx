@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { FechaHoraInput } from '@/components/ui/fecha-hora-input';
 
 interface Persona {
   id: number;
@@ -1059,13 +1060,11 @@ export default function FichaPersona({ personaId, user }: Props) {
                     </button>
                   ))}
                 </div>
-                <Input
+                <FechaHoraInput
                   id="fechaProximoSeg"
-                  type="datetime-local"
-                  required
                   value={fechaProximo}
-                  onChange={(e) => setFechaProximo(e.target.value)}
-                  className="text-sm h-8"
+                  onChange={setFechaProximo}
+                  required
                 />
               </div>
 

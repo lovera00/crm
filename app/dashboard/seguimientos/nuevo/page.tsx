@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { FechaHoraInput } from "@/components/ui/fecha-hora-input";
 
 interface Persona {
   id: number;
@@ -457,14 +458,11 @@ export default function NuevoSeguimientoPage() {
                   </button>
                 ))}
               </div>
-              <Input
+              <FechaHoraInput
                 id="fechaProximo"
-                type="datetime-local"
-                required
                 value={formData.fechaProximoSeguimiento}
-                onChange={(e) =>
-                  setFormData({ ...formData, fechaProximoSeguimiento: e.target.value })
-                }
+                onChange={(v) => setFormData({ ...formData, fechaProximoSeguimiento: v })}
+                required
               />
             </div>
           </CardContent>

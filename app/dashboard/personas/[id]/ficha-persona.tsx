@@ -200,7 +200,6 @@ export default function FichaPersona({ personaId, user }: Props) {
   const [selectedDeudas, setSelectedDeudas] = useState<number[]>([]);
   const [tipoGestionId, setTipoGestionId] = useState<string>('');
   const [observacion, setObservacion] = useState('');
-  const [requiereSeguimiento, setRequiereSeguimiento] = useState(false);
   const [fechaProximo, setFechaProximo] = useState('');
   const [expandedSeg, setExpandedSeg] = useState<number[]>([]);
   const [reglas, setReglas] = useState<ReglaTransicion[]>([]);
@@ -287,6 +286,10 @@ export default function FichaPersona({ personaId, user }: Props) {
       setError('Seleccione tipo de gestión');
       return;
     }
+    if (!fechaProximo) {
+      setError('Ingrese la fecha de próxima gestión');
+      return;
+    }
 
     setSaving(true);
     try {
@@ -299,8 +302,8 @@ export default function FichaPersona({ personaId, user }: Props) {
           deudaIds: selectedDeudas,
           tipoGestionId: parseInt(tipoGestionId, 10),
           observacion: observacion || undefined,
-          requiereSeguimiento,
-          fechaProximoSeguimiento: requiereSeguimiento && fechaProximo ? fechaProximo : undefined,
+          requiereSeguimiento: true,
+          fechaProximoSeguimiento: fechaProximo,
         }),
       });
 
@@ -319,7 +322,6 @@ export default function FichaPersona({ personaId, user }: Props) {
       setSelectedDeudas([]);
       setTipoGestionId('');
       setObservacion('');
-      setRequiereSeguimiento(false);
       setFechaProximo('');
 
       const [segRes, deudaRes] = await Promise.all([
@@ -1006,23 +1008,17 @@ export default function FichaPersona({ personaId, user }: Props) {
               />
               <div className="text-xs text-gray-400 text-right">{observacion.length}/500</div>
 
-              {/* Próximo seguimiento */}
+              {/* Próxima gestión (obligatorio) */}
               <div className="flex items-center gap-2">
-                <Checkbox
-                  id="requiereSeg"
-                  checked={requiereSeguimiento}
-                  onCheckedChange={(c) => setRequiereSeguimiento(!!c)}
-                  className="h-3 w-3"
+                <Label htmlFor="fechaProximoSeg" className="text-xs whitespace-nowrap">Próxima gestión</Label>
+                <input
+                  id="fechaProximoSeg"
+                  type="date"
+                  required
+                  value={fechaProximo}
+                  onChange={(e) => setFechaProximo(e.target.value)}
+                  className="border rounded px-1 py-0.5 text-xs flex-1"
                 />
-                <Label htmlFor="requiereSeg" className="text-xs">Próximo</Label>
-                {requiereSeguimiento && (
-                  <input
-                    type="date"
-                    value={fechaProximo}
-                    onChange={(e) => setFechaProximo(e.target.value)}
-                    className="border rounded px-1 py-0.5 text-xs"
-                  />
-                )}
               </div>
 
               <Button type="submit" disabled={saving} className="w-full h-8 text-sm">

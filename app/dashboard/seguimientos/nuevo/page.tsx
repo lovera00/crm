@@ -71,7 +71,6 @@ export default function NuevoSeguimientoPage() {
     personaId: personaIdParam ? parseInt(personaIdParam, 10) : 0,
     tipoGestionId: "",
     observacion: "",
-    requiereSeguimiento: false,
     fechaProximoSeguimiento: "",
   });
 
@@ -173,6 +172,11 @@ export default function NuevoSeguimientoPage() {
       return;
     }
 
+    if (!formData.fechaProximoSeguimiento) {
+      setError("Debe ingresar la fecha de próxima gestión");
+      return;
+    }
+
     setSaving(true);
 
     try {
@@ -184,8 +188,8 @@ export default function NuevoSeguimientoPage() {
           deudaIds: selectedDeudas,
           tipoGestionId: parseInt(formData.tipoGestionId, 10),
           observacion: formData.observacion,
-          requiereSeguimiento: formData.requiereSeguimiento,
-          fechaProximoSeguimiento: formData.fechaProximoSeguimiento || undefined,
+          requiereSeguimiento: true,
+          fechaProximoSeguimiento: formData.fechaProximoSeguimiento,
         }),
       });
 
@@ -423,30 +427,18 @@ export default function NuevoSeguimientoPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="requiereSeguimiento"
-                checked={formData.requiereSeguimiento}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, requiereSeguimiento: checked as boolean })
+            <div>
+              <Label htmlFor="fechaProximo">Fecha próxima gestión <span className="text-red-500">*</span></Label>
+              <Input
+                id="fechaProximo"
+                type="date"
+                required
+                value={formData.fechaProximoSeguimiento}
+                onChange={(e) =>
+                  setFormData({ ...formData, fechaProximoSeguimiento: e.target.value })
                 }
               />
-              <Label htmlFor="requiereSeguimiento">Requiere seguimiento</Label>
             </div>
-
-            {formData.requiereSeguimiento && (
-              <div>
-                <Label htmlFor="fechaProximo">Fecha próximo contacto</Label>
-                <Input
-                  id="fechaProximo"
-                  type="date"
-                  value={formData.fechaProximoSeguimiento}
-                  onChange={(e) =>
-                    setFormData({ ...formData, fechaProximoSeguimiento: e.target.value })
-                  }
-                />
-              </div>
-            )}
           </CardContent>
         </Card>
 

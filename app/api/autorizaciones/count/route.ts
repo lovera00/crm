@@ -1,34 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../src/infrastructure/lib/prisma';
-import { createAuthenticatedRouteHandler } from '../../../../src/infrastructure/auth/auth-middleware';
-import { AuthenticatedUser } from '../../../../src/infrastructure/auth/types';
+import { getToken } from 'next-auth/jwt';
 
-async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
-  const userId = typeof user.id === 'string' ? parseInt(user.id, 10) : user.id;
+export async function GET(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+  if (!token) {
+    return NextResponse.json({ count: 0 }, { status: 200 });
+  }
+
+  const userId = typeof token.id === 'string' ? parseInt(token.id, 10) : (token.id as number);
+  const role = token.role as string;
 
   let where: Record<string, unknown> = {};
 
-  if (user.role === 'supervisor') {
-    where = {
-      supervisorAsignadoId: userId,
-      estadoSolicitud: 'Pendiente',
-    };
-  } else if (user.role === 'gestor') {
-    where = {
-      gestorSolicitanteId: userId,
-      estadoSolicitud: 'Pendiente',
-    };
-  } else if (user.role === 'administrador') {
-    where = {
-      estadoSolicitud: 'Pendiente',
-    };
+  if (role === 'supervisor') {
+    where = { supervisorAsignadoId: userId, estadoSolicitud: 'Pendiente' };
+  } else if (role === 'gestor') {
+    where = { gestorSolicitanteId: userId, estadoSolicitud: 'Pendiente' };
+  } else if (role === 'administrador') {
+    where = { estadoSolicitud: 'Pendiente' };
   }
 
   const count = await prisma.solicitudAutorizacion.count({ where });
 
   return NextResponse.json({ count });
 }
-
-export const GET = createAuthenticatedRouteHandler(GETHandler, {
-  requiredRoles: ['gestor', 'supervisor', 'administrador']
-});

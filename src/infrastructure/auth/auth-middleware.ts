@@ -1,7 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 import { getAuthenticatedUserFromHeaders, requireAuth, requireRole, requireResourceAccess } from './auth-utils';
 import { AuthenticatedUser, UserRole } from './types';
 import { AppError } from '../../domain/errors/app-error';
+
+async function getAuthenticatedUserFromRequest(request: NextRequest): Promise<AuthenticatedUser | null> {
+  // Try headers first (set by Next.js middleware when running)
+  const fromHeaders = getAuthenticatedUserFromHeaders(request.headers);
+  if (fromHeaders) return fromHeaders;
+
+  // Fallback: read JWT token directly (for when middleware is not in the request path)
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) return null;
+
+  const role = token.role as UserRole;
+  if (!['gestor', 'supervisor', 'administrador'].includes(role)) return null;
+
+  return {
+    id: token.id as string,
+    role,
+    email: token.email ?? undefined,
+    name: token.name ?? undefined,
+  };
+}
 
 export type AuthOptions = {
   /**
@@ -37,9 +58,8 @@ export function withAuth(
   return async function (request: NextRequest, ...args: any[]) {
     const { requireAuth: requireAuthOption = true, requiredRoles = [], authorize, getResourceOwnerId } = options;
 
-    // Get authenticated user from headers (set by Next.js middleware)
-    const headers = request.headers;
-    const user = getAuthenticatedUserFromHeaders(headers);
+    // Get authenticated user from headers or JWT token
+    const user = await getAuthenticatedUserFromRequest(request);
 
     if (requireAuthOption && !user) {
       throw new AppError('Authentication required', 401, 'UNAUTHENTICATED');

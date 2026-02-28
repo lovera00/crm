@@ -23,10 +23,12 @@ async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
     };
   }
 
-  const [solicitudes, total] = await Promise.all([
+  const [rows, total] = await Promise.all([
     prisma.solicitudAutorizacion.findMany({
       where,
       include: {
+        estadoOrigen: { select: { nombre: true } },
+        estadoDestino: { select: { nombre: true } },
         gestorSolicitante: {
           select: { id: true, nombre: true, username: true },
         },
@@ -43,6 +45,12 @@ async function GETHandler(request: NextRequest, user: AuthenticatedUser) {
     }),
     prisma.solicitudAutorizacion.count({ where }),
   ]);
+
+  const solicitudes = rows.map((s) => ({
+    ...s,
+    estadoOrigen: s.estadoOrigen.nombre,
+    estadoDestino: s.estadoDestino.nombre,
+  }));
 
   return NextResponse.json({
     solicitudes,

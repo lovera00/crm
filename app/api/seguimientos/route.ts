@@ -22,7 +22,7 @@ const crearSeguimientoSchema = z.object({
   tipoGestionId: z.number(),
   observacion: z.string().optional(),
   requiereSeguimiento: z.boolean().optional(),
-  fechaProximoSeguimiento: z.string().datetime().optional(),
+  fechaProximoSeguimiento: z.string().optional(),
 });
 
 type CrearSeguimientoInput = z.infer<typeof crearSeguimientoSchema>;

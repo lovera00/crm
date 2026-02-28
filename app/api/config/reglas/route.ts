@@ -110,11 +110,11 @@ async function GETHandler(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const query = listarReglasSchema.parse({
-    tipo_gestion_id: searchParams.get('tipo_gestion_id'),
-    estado_origen_id: searchParams.get('estado_origen_id'),
-    activo: searchParams.get('activo'),
-    limit: searchParams.get('limit'),
-    offset: searchParams.get('offset'),
+    tipo_gestion_id: searchParams.get('tipo_gestion_id') ?? undefined,
+    estado_origen_id: searchParams.get('estado_origen_id') ?? undefined,
+    activo: searchParams.get('activo') ?? undefined,
+    limit: searchParams.get('limit') ?? undefined,
+    offset: searchParams.get('offset') ?? undefined,
   });
 
   const where: Record<string, unknown> = {};
